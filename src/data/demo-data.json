@@ -1,0 +1,323 @@
+{
+  "meta": {
+    "name": "Paul Shervin",
+    "role": "AI & ML Student",
+    "location": "Saveetha Engineering College",
+    "tagline": "Deep Learning, Generative & Agentic AI enthusiast"
+  },
+  "about": "I'm Paul Shervin, an enthusiastic learner pursuing AI & ML at Saveetha Engineering College. I have worked on several AI-based projects and actively participated in prestigious hackathons like the Smart India Hackathon and IBM Datathon, gaining real-world problem-solving experience. I'm passionate about Machine Learning, Deep Learning, Generative AI, and Agentic AI, and I love exploring new AI tools and technologies. I enjoy solving complex DSA and Java problems, constantly pushing myself to innovate and build impactful solutions that bridge technology with real-world challenges.",
+  "socials": {
+    "github": "https://github.com/paulshervin",
+    "linkedin": "https://linkedin.com/in/paulshervin",
+    "leetcode": "https://leetcode.com/paulshervin",
+    "email": "paul.shervin@example.com"
+  },
+  "skills": [
+    {
+      "category": "Languages",
+      "items": [
+        { "name": "Python", "level": 90 },
+        { "name": "Java", "level": 85 },
+        { "name": "JavaScript", "level": 70 },
+        { "name": "SQL", "level": 75 }
+      ]
+    },
+    {
+      "category": "ML & DL",
+      "items": [
+        { "name": "TensorFlow", "level": 85 },
+        { "name": "PyTorch", "level": 80 },
+        { "name": "scikit-learn", "level": 88 },
+        { "name": "Hugging Face", "level": 82 }
+      ]
+    },
+    {
+      "category": "Frameworks",
+      "items": [
+        { "name": "React", "level": 75 },
+        { "name": "Node.js", "level": 70 },
+        { "name": "FastAPI", "level": 80 },
+        { "name": "Flask", "level": 85 }
+      ]
+    },
+    {
+      "category": "DevOps & Tools",
+      "items": [
+        { "name": "Git", "level": 90 },
+        { "name": "Docker", "level": 75 },
+        { "name": "PostgreSQL", "level": 78 },
+        { "name": "AWS", "level": 65 }
+      ]
+    }
+  ],
+  "leetcode": {
+    "problems_solved": 247,
+    "rating": 1654,
+    "streak": 42
+  },
+  "education": [
+    {
+      "school": "Saveetha Engineering College",
+      "degree": "B.Tech - AI & ML",
+      "from": "2022",
+      "to": "2026",
+      "details": [
+        "Core: Machine Learning, Deep Learning, Data Structures",
+        "GPA: 8.5/10",
+        "Active in coding clubs and AI research groups"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project-1",
+      "title": "Smart Traffic Signal Optimization",
+      "summary": "RL-based adaptive traffic control system reducing congestion by 35%",
+      "tech": ["Python", "Reinforcement Learning", "OpenAI Gym", "SUMO"],
+      "description": "Developed an intelligent traffic management system using Deep Q-Networks (DQN) to dynamically adjust signal timings based on real-time traffic flow. The system reduces average waiting time and improves throughput in urban intersections.",
+      "approach": "Implemented custom Gym environment simulating multi-intersection traffic, trained DQN agent with prioritized experience replay, and deployed model for real-time inference.",
+      "metrics": "35% reduction in average wait time, 28% improvement in traffic flow",
+      "repo": "https://github.com/paulshervin/traffic-rl",
+      "live": "",
+      "screenshot": "project1.png"
+    },
+    {
+      "id": "project-2",
+      "title": "Document Summarizer",
+      "summary": "Transformer-based abstractive summarization with prompt tuning",
+      "tech": ["Python", "Transformers", "BART", "LangChain"],
+      "description": "Built an advanced document summarization tool using fine-tuned BART model with custom prompt engineering for domain-specific summarization. Supports multi-document summarization and key insight extraction.",
+      "approach": "Fine-tuned BART on domain-specific corpus, implemented prompt templates for different document types, integrated with LangChain for document processing pipeline.",
+      "metrics": "ROUGE-L score of 0.42, 85% user satisfaction",
+      "repo": "https://github.com/paulshervin/doc-summarizer",
+      "live": "https://doc-summarizer-demo.vercel.app",
+      "screenshot": "project2.png"
+    },
+    {
+      "id": "project-3",
+      "title": "Medical Image Segmentation",
+      "summary": "U-Net architecture for precise tumor detection in CT scans",
+      "tech": ["Python", "PyTorch", "U-Net", "OpenCV"],
+      "description": "Developed a deep learning pipeline for automated tumor segmentation in medical CT scans. The U-Net model achieves high precision in identifying tumor boundaries, assisting radiologists in diagnosis.",
+      "approach": "Implemented custom U-Net with attention mechanisms, data augmentation pipeline for medical images, and post-processing for smooth segmentation masks.",
+      "metrics": "Dice coefficient: 0.89, IoU: 0.84",
+      "repo": "https://github.com/paulshervin/medical-segmentation",
+      "live": "",
+      "screenshot": "project3.png"
+    },
+    {
+      "id": "project-4",
+      "title": "Agentic Workflow Orchestrator",
+      "summary": "Autonomous AI agent with tool-calling and multi-step reasoning",
+      "tech": ["Python", "LangChain", "GPT-4", "LangGraph"],
+      "description": "Created an autonomous agent system that can break down complex tasks, use multiple tools (web search, calculators, APIs), and execute multi-step workflows with self-correction capabilities.",
+      "approach": "Designed agentic architecture using LangGraph for state management, implemented ReAct pattern for reasoning + acting, integrated multiple tool APIs with function calling.",
+      "metrics": "Successfully completes 78% of complex multi-step tasks",
+      "repo": "https://github.com/paulshervin/agentic-workflow",
+      "live": "",
+      "screenshot": "project4.png"
+    }
+  ],
+  "experience": [
+    {
+      "company": "AI Research Lab, Saveetha Engineering College",
+      "role": "Research Intern",
+      "from": "2024",
+      "to": "Present",
+      "bullets": [
+        "Researching novel architectures for multi-modal learning",
+        "Published paper on efficient attention mechanisms",
+        "Mentoring junior students on ML fundamentals"
+      ]
+    },
+    {
+      "company": "Tech Startup Internship",
+      "role": "ML Engineering Intern",
+      "from": "2023",
+      "to": "2024",
+      "bullets": [
+        "Built recommendation engine serving 10K+ users",
+        "Optimized model inference time by 40%",
+        "Deployed ML pipelines on AWS with CI/CD"
+      ]
+    }
+  ],
+  "hackathons": [
+    {
+      "name": "Smart India Hackathon",
+      "year": "2024",
+      "role": "Team Lead",
+      "description": "Led team of 5 to build AI-powered solution for government problem statement. Developed real-time anomaly detection system for public infrastructure monitoring. Advanced to national finals.",
+      "image": "/placeholder.svg"
+    },
+    {
+      "name": "IBM Datathon",
+      "year": "2023",
+      "role": "Data Scientist",
+      "description": "Competed in 48-hour data science challenge analyzing enterprise datasets. Built predictive models for customer churn with 87% accuracy. Finished in top 15 among 200+ teams.",
+      "image": "/placeholder.svg"
+    },
+    {
+      "name": "Google Solution Challenge",
+      "year": "2024",
+      "role": "Full Stack Developer",
+      "description": "Built sustainable development solution using Google Cloud technologies. Created mobile app for carbon footprint tracking with ML-based recommendations.",
+      "image": "/placeholder.svg"
+    },
+    {
+      "name": "HackMIT",
+      "year": "2023",
+      "role": "ML Engineer",
+      "description": "Developed healthcare AI assistant for mental health support. Integrated NLP models for sentiment analysis and personalized recommendations.",
+      "image": "/placeholder.svg"
+    },
+    {
+      "name": "Microsoft Imagine Cup",
+      "year": "2023",
+      "role": "Backend Developer",
+      "description": "Created accessibility tool for visually impaired users using Azure Cognitive Services. Won regional recognition for innovation.",
+      "image": "/placeholder.svg"
+    }
+  ],
+  "achievements": [
+    {
+      "title": "1st Place - Smart India Hackathon",
+      "event": "Smart India Hackathon 2024",
+      "type": "hackathon",
+      "description": "Won national level hackathon for AI-powered infrastructure monitoring solution"
+    },
+    {
+      "title": "Top 15 - IBM Datathon",
+      "event": "IBM Datathon 2023",
+      "type": "hackathon",
+      "description": "Ranked among top 15 teams out of 200+ for customer churn prediction model"
+    },
+    {
+      "title": "3rd Place - Google Solution Challenge",
+      "event": "Google Solution Challenge 2024",
+      "type": "hackathon",
+      "description": "Won regional prize for sustainable carbon footprint tracking app"
+    },
+    {
+      "title": "LeetCode Knight Badge",
+      "event": "LeetCode Weekly Contest",
+      "type": "coding",
+      "description": "Achieved Knight rating (1800+) in weekly programming contests"
+    },
+    {
+      "title": "CodeChef 4 Star",
+      "event": "CodeChef Long Challenge",
+      "type": "coding",
+      "description": "Maintained 4-star rating with consistent performance in monthly contests"
+    },
+    {
+      "title": "Best ML Project Award",
+      "event": "College Tech Fest 2024",
+      "type": "project",
+      "description": "Won best project award for medical image segmentation system"
+    }
+  ],
+  "badges": [
+    {
+      "name": "GitHub Foundations",
+      "source": "GitHub",
+      "image": "badge1.png"
+    },
+    {
+      "name": "Data Analytics Essentials",
+      "source": "IBM",
+      "image": "badge2.png"
+    },
+    {
+      "name": "Gemini Certified Student",
+      "source": "Google",
+      "image": "badge3.png"
+    },
+    {
+      "name": "50 Days Badge 2025",
+      "source": "LeetCode",
+      "image": "badge4.png"
+    },
+    {
+      "name": "100 Days Badge 2025",
+      "source": "LeetCode",
+      "image": "badge5.png"
+    },
+    {
+      "name": "200 Days Badge 2025",
+      "source": "LeetCode",
+      "image": "badge6.png"
+    },
+    {
+      "name": "Top SQL 50",
+      "source": "LeetCode",
+      "image": "badge7.png"
+    },
+    {
+      "name": "LeetCode 75",
+      "source": "LeetCode",
+      "image": "badge8.png"
+    },
+    {
+      "name": "SQL Data Navigator",
+      "source": "LeetCode",
+      "image": "badge9.png"
+    },
+    {
+      "name": "Pull Shark",
+      "source": "GitHub",
+      "image": "badge10.png"
+    },
+    {
+      "name": "Arctic Code Vault Contributor",
+      "source": "GitHub",
+      "image": "badge11.png"
+    },
+    {
+      "name": "YOLO",
+      "source": "GitHub",
+      "image": "badge12.png"
+    },
+    {
+      "name": "Pair Extraordinary",
+      "source": "GitHub",
+      "image": "badge13.png"
+    },
+    {
+      "name": "Quickdraw",
+      "source": "GitHub",
+      "image": "badge14.png"
+    },
+    {
+      "name": "Galaxy Brain",
+      "source": "GitHub",
+      "image": "badge15.png"
+    }
+  ],
+  "certificates": [
+    {
+      "title": "Deep Learning Specialization",
+      "issuer": "Coursera (Andrew Ng)",
+      "date": "2023-08",
+      "file": "cert1.pdf"
+    },
+    {
+      "title": "AWS Certified Machine Learning",
+      "issuer": "Amazon Web Services",
+      "date": "2024-02",
+      "file": "cert2.pdf"
+    },
+    {
+      "title": "Advanced NLP with Transformers",
+      "issuer": "Hugging Face",
+      "date": "2024-05",
+      "file": "cert3.pdf"
+    },
+    {
+      "title": "Reinforcement Learning",
+      "issuer": "Stanford Online",
+      "date": "2023-12",
+      "file": "cert4.pdf"
+    }
+  ]
+}
