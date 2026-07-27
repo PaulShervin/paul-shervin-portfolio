@@ -4,10 +4,17 @@ import { ExternalLink, Github, X } from 'lucide-react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import demoData from '../data/demo-data.json';
+import { usePortfolioData, ProjectData } from '@/hooks/usePortfolioData';
 
 export const Projects = () => {
-  const [selectedProject, setSelectedProject] = useState<typeof demoData.projects[0] | null>(null);
+  const { projectsQuery } = usePortfolioData();
+  const projects = projectsQuery.data || [];
+  const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
+
+  const isValidUrl = (url?: string) => {
+    if (!url) return false;
+    return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/');
+  };
 
   return (
     <section id="projects" className="py-20 md:py-32 relative overflow-hidden">
@@ -26,7 +33,7 @@ export const Projects = () => {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {demoData.projects.map((project, index) => (
+          {projects.map((project, index) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 30 }}
@@ -36,9 +43,13 @@ export const Projects = () => {
               className="group card-elevated p-6 cursor-pointer hover-lift"
               onClick={() => setSelectedProject(project)}
             >
-              {/* Project Screenshot Placeholder */}
-              <div className="w-full h-48 mb-4 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center overflow-hidden">
-                <div className="text-6xl">🚀</div>
+              {/* Project Screenshot */}
+              <div className="w-full h-64 mb-4 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center overflow-hidden">
+                {project.screenshot ? (
+                  <img src={project.screenshot} alt={project.title} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="text-6xl">🚀</div>
+                )}
               </div>
 
               <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
@@ -62,9 +73,38 @@ export const Projects = () => {
                 )}
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-primary font-medium">
-                View Details
-                <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/20">
+                <div className="flex items-center gap-2 text-sm text-primary font-medium">
+                  View Details
+                  <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  {isValidUrl(project.repo) && (
+                    <a 
+                      href={project.repo} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-xl bg-primary/10 border border-primary/25 text-primary hover:bg-primary/20 transition-all flex items-center justify-center"
+                      onClick={(e) => e.stopPropagation()}
+                      title="View GitHub Repository"
+                    >
+                      <Github className="w-4 h-4" />
+                    </a>
+                  )}
+                  {isValidUrl(project.live) && (
+                    <a 
+                      href={project.live} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-xl bg-primary/10 border border-primary/25 text-primary hover:bg-primary/20 transition-all flex items-center justify-center"
+                      onClick={(e) => e.stopPropagation()}
+                      title="View Live Demo"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  )}
+                </div>
               </div>
             </motion.div>
           ))}
@@ -73,7 +113,7 @@ export const Projects = () => {
 
       {/* Project Modal */}
       <Dialog open={!!selectedProject} onOpenChange={() => setSelectedProject(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" data-lenis-prevent>
           {selectedProject && (
             <div className="space-y-6">
               {/* Header */}
@@ -83,8 +123,12 @@ export const Projects = () => {
               </div>
 
               {/* Screenshot */}
-              <div className="w-full h-64 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <div className="text-8xl">🚀</div>
+              <div className="w-full h-96 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center overflow-hidden">
+                {selectedProject.screenshot ? (
+                  <img src={selectedProject.screenshot} alt={selectedProject.title} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="text-8xl">🚀</div>
+                )}
               </div>
 
               {/* Tech Stack */}
@@ -125,7 +169,7 @@ export const Projects = () => {
 
               {/* Links */}
               <div className="flex flex-wrap gap-4">
-                {selectedProject.repo && (
+                {isValidUrl(selectedProject.repo) && (
                   <Button asChild>
                     <a href={selectedProject.repo} target="_blank" rel="noopener noreferrer">
                       <Github className="w-4 h-4 mr-2" />
@@ -133,7 +177,7 @@ export const Projects = () => {
                     </a>
                   </Button>
                 )}
-                {selectedProject.live && (
+                {isValidUrl(selectedProject.live) && (
                   <Button variant="outline" asChild>
                     <a href={selectedProject.live} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="w-4 h-4 mr-2" />

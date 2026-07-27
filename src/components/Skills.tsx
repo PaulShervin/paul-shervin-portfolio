@@ -12,7 +12,19 @@ import {
 } from 'react-icons/si';
 import { VscVscode } from 'react-icons/vsc';
 
+import { usePortfolioData } from '@/hooks/usePortfolioData';
+import * as Icons from 'lucide-react';
+
 const serif = { fontFamily: '"Cormorant Garamond", serif' };
+
+const getCategoryIcon = (category: string) => {
+  const catLower = category.toLowerCase();
+  if (catLower.includes('prog') || catLower.includes('lang')) return Icons.Code2;
+  if (catLower.includes('ai') || catLower.includes('machine') || catLower.includes('learn')) return Icons.Brain;
+  if (catLower.includes('web') || catLower.includes('dev')) return Icons.Globe;
+  if (catLower.includes('data') || catLower.includes('back')) return Icons.Database;
+  return Icons.Cpu;
+};
 
 const categories = [
   {
@@ -75,15 +87,26 @@ const Dots = ({ level }: { level: number }) => (
     {Array.from({ length: 5 }).map((_, i) => (
       <span
         key={i}
-        className={`w-2 h-2 rounded-full ${
-          i < level ? 'bg-primary' : 'bg-primary/20'
-        }`}
+        className={`w-2 h-2 rounded-full ${i < level ? 'bg-primary' : 'bg-primary/20'
+          }`}
       />
     ))}
   </div>
 );
 
 export const Skills = () => {
+  const { skillsQuery } = usePortfolioData();
+  const rawCategories = skillsQuery.data || [];
+
+  const displayCategories = rawCategories.map(cat => ({
+    title: cat.category,
+    icon: getCategoryIcon(cat.category),
+    items: cat.items.map(item => ({
+      name: item.name,
+      level: Math.ceil(item.level / 20), // convert 0-100 to 1-5
+    }))
+  }));
+
   return (
     <section id="skills" className="relative py-24 overflow-hidden bg-secondary/40">
       {/* Decorative circle */}
@@ -147,7 +170,7 @@ export const Skills = () => {
 
         {/* Category cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-          {categories.map((cat, idx) => {
+          {displayCategories.map((cat, idx) => {
             const Icon = cat.icon;
             return (
               <motion.div

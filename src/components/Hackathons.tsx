@@ -11,8 +11,12 @@ import {
 } from './ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { useRef } from 'react';
+import { usePortfolioData } from '@/hooks/usePortfolioData';
 
 export const Hackathons = () => {
+  const { hackathonsQuery } = usePortfolioData();
+  const hackathons = hackathonsQuery.data || [];
+
   const plugin = useRef(
     Autoplay({ delay: 1000, stopOnInteraction: false, stopOnMouseEnter: true })
   );
@@ -49,7 +53,7 @@ export const Hackathons = () => {
             }}
           >
             <CarouselContent className="-ml-4">
-              {demoData.hackathons.map((hackathon, index) => (
+              {hackathons.map((hackathon, index) => (
                 <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
                   <motion.div
                     initial={{ opacity: 0, y: 30, scale: 0.9 }}
@@ -61,17 +65,30 @@ export const Hackathons = () => {
                   >
                     {/* Image Section */}
                     <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
-                      <motion.img
-                        src={hackathon.image}
-                        alt={hackathon.name}
-                        className="w-full h-full object-cover"
-                        whileHover={{ scale: 1.15 }}
-                        transition={{ duration: 0.6, ease: "easeOut" }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
-                      
+                      {hackathon.image ? (
+                        <motion.img
+                          src={hackathon.image}
+                          alt={hackathon.name}
+                          className="w-full h-full object-cover"
+                          style={{
+                            objectPosition: (
+                              hackathon.name?.toLowerCase().includes('solution') ||
+                              hackathon.image?.includes('google-solution-challenge') ||
+                              hackathon.image?.includes('solution-challenge')
+                            )
+                              ? 'right 15% top'
+                              : 'center'
+                          }}
+                          whileHover={{ scale: 1.15 }}
+                          transition={{ duration: 0.6, ease: "easeOut" }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-4xl">🏆</div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/30 to-transparent" />
+
                       {/* Trophy Badge */}
-                      <motion.div 
+                      <motion.div
                         className="absolute top-4 right-4 w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center shadow-lg"
                         whileHover={{ rotate: 360, scale: 1.1 }}
                         transition={{ duration: 0.5 }}
@@ -94,7 +111,7 @@ export const Hackathons = () => {
 
                     {/* Content Section */}
                     <div className="p-6">
-                      <motion.h3 
+                      <motion.h3
                         className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-1"
                         whileHover={{ x: 5 }}
                         transition={{ duration: 0.2 }}
@@ -104,7 +121,7 @@ export const Hackathons = () => {
 
                       <div className="flex items-center gap-2 text-muted-foreground mb-4">
                         <Users className="w-4 h-4" />
-                        <span className="text-sm font-medium">{hackathon.role}</span>
+                        <span className="text-sm font-medium">{hackathon.position || 'Team Member'}</span>
                       </div>
 
                       <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
@@ -115,7 +132,7 @@ export const Hackathons = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            
+
             <div className="flex items-center justify-center gap-4 mt-8">
               <CarouselPrevious className="static translate-y-0 bg-card border-border hover:bg-primary hover:text-primary-foreground" />
               <CarouselNext className="static translate-y-0 bg-card border-border hover:bg-primary hover:text-primary-foreground" />
@@ -132,7 +149,7 @@ export const Hackathons = () => {
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
         >
           <div className="card-elevated p-6 text-center hover-lift">
-            <div className="text-3xl font-bold text-gradient mb-2">{demoData.hackathons.length}</div>
+            <div className="text-3xl font-bold text-gradient mb-2">{hackathons.length}</div>
             <div className="text-sm text-muted-foreground">Hackathons</div>
           </div>
           <div className="card-elevated p-6 text-center hover-lift">

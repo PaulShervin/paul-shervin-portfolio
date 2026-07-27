@@ -1,9 +1,15 @@
 import { Github, Linkedin, Mail, Heart } from 'lucide-react';
 import { SiLeetcode } from 'react-icons/si';
-import demoData from '../data/demo-data.json';
+import { usePortfolioData } from '@/hooks/usePortfolioData';
 
 export const Footer = () => {
+  const { profileQuery } = usePortfolioData();
+  const profile = profileQuery.data;
   const currentYear = new Date().getFullYear();
+
+  const name = profile?.name || "Paul Shervin";
+  const role = profile?.role || "AI & ML Student";
+  const socials = profile?.socials || { github: '#', linkedin: '#', leetcode: '#', email: 'paul.shervin@example.com' };
 
   return (
     <footer className="py-12 border-t border-border/50 bg-card/50">
@@ -12,10 +18,10 @@ export const Footer = () => {
           {/* Brand */}
           <div>
             <h3 className="text-2xl font-bold text-gradient mb-2">
-              {demoData.meta.name}
+              {name}
             </h3>
             <p className="text-sm text-muted-foreground">
-              {demoData.meta.role}
+              {role}
             </p>
           </div>
 
@@ -43,7 +49,7 @@ export const Footer = () => {
             <h4 className="font-semibold mb-4">Connect</h4>
             <div className="flex gap-3">
               <a
-                href={demoData.socials.github}
+                href={socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full glassmorphism hover:bg-primary/10 transition-colors"
@@ -52,7 +58,7 @@ export const Footer = () => {
                 <Github className="w-5 h-5" />
               </a>
               <a
-                href={demoData.socials.linkedin}
+                href={socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full glassmorphism hover:bg-primary/10 transition-colors"
@@ -61,7 +67,7 @@ export const Footer = () => {
                 <Linkedin className="w-5 h-5" />
               </a>
               <a
-                href={demoData.socials.leetcode}
+                href={socials.leetcode}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full glassmorphism hover:bg-primary/10 transition-colors"
@@ -70,7 +76,7 @@ export const Footer = () => {
                 <SiLeetcode className="w-5 h-5" />
               </a>
               <a
-                href={`mailto:${demoData.socials.email}`}
+                href={`mailto:${socials.email}`}
                 className="p-2 rounded-full glassmorphism hover:bg-primary/10 transition-colors"
                 aria-label="Email"
               >
@@ -81,7 +87,7 @@ export const Footer = () => {
         </div>
 
         <div className="pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <p>© {currentYear} {demoData.meta.name}. All rights reserved.</p>
+          <p>© {currentYear} {name}. All rights reserved.</p>
           <p className="flex items-center gap-1">
             Built with <Heart className="w-4 h-4 text-primary fill-primary inline" /> using React & GSAP
           </p>

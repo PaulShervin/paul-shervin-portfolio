@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Moon, Sun } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 import { Button } from './ui/button';
+import { usePortfolioData } from '@/hooks/usePortfolioData';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
@@ -15,6 +16,9 @@ const navLinks = [
 ];
 
 export const Navbar = () => {
+  const { profileQuery } = usePortfolioData();
+  const name = profileQuery.data?.name || "Paul Shervin";
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
@@ -71,7 +75,7 @@ export const Navbar = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Paul Shervin
+            {name}
           </motion.a>
 
           {/* Desktop Navigation */}

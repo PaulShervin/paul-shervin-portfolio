@@ -6,12 +6,12 @@ import demoData from '../data/demo-data.json';
 import portrait from '@/assets/hero-portrait.png';
 
 /* ─── constants ─── */
-const CARD_W      = 280;
-const CARD_H      = 490;
+const CARD_W = 280;
+const CARD_H = 490;
 const CONTAINER_H = 760;
-const ANCHOR_Y    = 14;
-const SEGMENTS    = 10;
-const SEG_GAP     = 20;
+const ANCHOR_Y = 14;
+const SEGMENTS = 10;
+const SEG_GAP = 20;
 
 /* smooth path through points */
 function buildPath(pts: [number, number][]): string {
@@ -28,50 +28,50 @@ function buildPath(pts: [number, number][]): string {
 }
 
 export const HangingIDCard = () => {
-  const containerRef    = useRef<HTMLDivElement>(null);
-  const cardRef         = useRef<HTMLDivElement>(null);
-  
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+
   // Left strap refs
-  const leftStrapRef     = useRef<SVGPathElement>(null);
-  const leftWeaveRef      = useRef<SVGPathElement>(null);
-  const leftHighRef      = useRef<SVGPathElement>(null);
+  const leftStrapRef = useRef<SVGPathElement>(null);
+  const leftWeaveRef = useRef<SVGPathElement>(null);
+  const leftHighRef = useRef<SVGPathElement>(null);
   const leftTextRouteRef = useRef<SVGPathElement>(null);
 
   // Right strap refs
-  const rightStrapRef     = useRef<SVGPathElement>(null);
-  const rightWeaveRef      = useRef<SVGPathElement>(null);
-  const rightHighRef      = useRef<SVGPathElement>(null);
+  const rightStrapRef = useRef<SVGPathElement>(null);
+  const rightWeaveRef = useRef<SVGPathElement>(null);
+  const rightHighRef = useRef<SVGPathElement>(null);
   const rightTextRouteRef = useRef<SVGPathElement>(null);
 
   // Clip system refs
-  const clipGroupRef      = useRef<SVGGElement>(null);
-  const vinylStrapRef     = useRef<SVGPathElement>(null);
-  const snapButtonRef     = useRef<SVGCircleElement>(null);
+  const clipGroupRef = useRef<SVGGElement>(null);
+  const vinylStrapRef = useRef<SVGPathElement>(null);
+  const snapButtonRef = useRef<SVGCircleElement>(null);
   const snapButtonInnerRef = useRef<SVGCircleElement>(null);
 
   // Peg refs
-  const pegRef          = useRef<SVGCircleElement>(null);
-  const pegHighRef      = useRef<SVGCircleElement>(null);
-  const pegScrewRef     = useRef<SVGCircleElement>(null);
+  const pegRef = useRef<SVGCircleElement>(null);
+  const pegHighRef = useRef<SVGCircleElement>(null);
+  const pegScrewRef = useRef<SVGCircleElement>(null);
 
   useEffect(() => {
-    const container       = containerRef.current;
-    const card            = cardRef.current;
-    const leftStrap       = leftStrapRef.current;
-    const leftWeave       = leftWeaveRef.current;
-    const leftHigh        = leftHighRef.current;
-    const leftTextRoute   = leftTextRouteRef.current;
-    const rightStrap      = rightStrapRef.current;
-    const rightWeave      = rightWeaveRef.current;
-    const rightHigh       = rightHighRef.current;
-    const rightTextRoute  = rightTextRouteRef.current;
-    const clipGroup       = clipGroupRef.current;
-    const vinylStrap      = vinylStrapRef.current;
-    const snapButton      = snapButtonRef.current;
+    const container = containerRef.current;
+    const card = cardRef.current;
+    const leftStrap = leftStrapRef.current;
+    const leftWeave = leftWeaveRef.current;
+    const leftHigh = leftHighRef.current;
+    const leftTextRoute = leftTextRouteRef.current;
+    const rightStrap = rightStrapRef.current;
+    const rightWeave = rightWeaveRef.current;
+    const rightHigh = rightHighRef.current;
+    const rightTextRoute = rightTextRouteRef.current;
+    const clipGroup = clipGroupRef.current;
+    const vinylStrap = vinylStrapRef.current;
+    const snapButton = snapButtonRef.current;
     const snapButtonInner = snapButtonInnerRef.current;
-    const peg             = pegRef.current;
-    const pegHigh         = pegHighRef.current;
-    const pegScrew        = pegScrewRef.current;
+    const peg = pegRef.current;
+    const pegHigh = pegHighRef.current;
+    const pegScrew = pegScrewRef.current;
 
     if (
       !container || !card || !peg || !pegHigh || !pegScrew ||
@@ -80,7 +80,7 @@ export const HangingIDCard = () => {
       !clipGroup || !vinylStrap || !snapButton || !snapButtonInner
     ) return;
 
-    const W       = container.offsetWidth || 320;
+    const W = container.offsetWidth || 320;
     const anchorX = W / 2;
     const anchorY = ANCHOR_Y;
 
@@ -202,7 +202,7 @@ export const HangingIDCard = () => {
     /* Attach to CONTAINER so whole area is responsive */
     container.addEventListener('pointerdown', onPointerDown);
     container.addEventListener('pointermove', onPointerMove);
-    container.addEventListener('pointerup',   onPointerUp);
+    container.addEventListener('pointerup', onPointerUp);
     container.addEventListener('pointercancel', onPointerUp);
 
     /* ── RAF sync loop ── */
@@ -210,12 +210,12 @@ export const HangingIDCard = () => {
 
     const sync = () => {
       const { x, y } = cardBody.position;
-      const angle    = cardBody.angle;
+      const angle = cardBody.angle;
       const angleDeg = angle * (180 / Math.PI);
 
       /* Card DOM */
-      card.style.left      = `${x - CARD_W / 2}px`;
-      card.style.top       = `${y - CARD_H / 2}px`;
+      card.style.left = `${x - CARD_W / 2}px`;
+      card.style.top = `${y - CARD_H / 2}px`;
       card.style.transform = `rotate(${angleDeg}deg)`;
 
       /* Card top-centre in world space via rotation matrix */
@@ -304,9 +304,9 @@ export const HangingIDCard = () => {
       /* Peg Position */
       const ps = String(anchorX);
       const py = String(anchorY);
-      peg.setAttribute('cx', ps);     peg.setAttribute('cy', py);
+      peg.setAttribute('cx', ps); peg.setAttribute('cy', py);
       pegHigh.setAttribute('cx', ps); pegHigh.setAttribute('cy', String(anchorY - 2));
-      pegScrew.setAttribute('cx', ps);pegScrew.setAttribute('cy', py);
+      pegScrew.setAttribute('cx', ps); pegScrew.setAttribute('cy', py);
 
       raf = requestAnimationFrame(sync);
     };
@@ -315,9 +315,9 @@ export const HangingIDCard = () => {
 
     return () => {
       cancelAnimationFrame(raf);
-      container.removeEventListener('pointerdown',   onPointerDown);
-      container.removeEventListener('pointermove',   onPointerMove);
-      container.removeEventListener('pointerup',     onPointerUp);
+      container.removeEventListener('pointerdown', onPointerDown);
+      container.removeEventListener('pointermove', onPointerMove);
+      container.removeEventListener('pointerup', onPointerUp);
       container.removeEventListener('pointercancel', onPointerUp);
       Matter.Runner.stop(runner);
       Matter.Engine.clear(engine);
@@ -325,10 +325,10 @@ export const HangingIDCard = () => {
   }, []);
 
   const socialLinks = [
-    { icon: Github,      href: demoData.socials.github,            label: 'GitHub'   },
-    { icon: Linkedin,    href: demoData.socials.linkedin,          label: 'LinkedIn' },
-    { icon: SiLeetcode,  href: demoData.socials.leetcode,          label: 'LeetCode' },
-    { icon: Mail,        href: `mailto:${demoData.socials.email}`, label: 'Email'    },
+    { icon: Github, href: demoData.socials.github, label: 'GitHub' },
+    { icon: Linkedin, href: demoData.socials.linkedin, label: 'LinkedIn' },
+    { icon: SiLeetcode, href: demoData.socials.leetcode, label: 'LeetCode' },
+    { icon: Mail, href: `mailto:${demoData.socials.email}`, label: 'Email' },
   ];
 
   return (
@@ -358,26 +358,26 @@ export const HangingIDCard = () => {
         <defs>
           {/* Woven fabric texture pattern */}
           <pattern id="lanyard-weave" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
-            <rect width="10" height="10" fill="#c4956a" />
+            <rect width="10" height="10" fill="#4A8B6F" />
             <path d="M0,0 L5,5 L10,0" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="2" />
             <path d="M0,10 L5,5 L10,10" fill="none" stroke="rgba(0,0,0,0.18)" strokeWidth="2" />
           </pattern>
 
-          {/* Premium gold/bronze gradient for metal clips */}
+          {/* Brushed sage metal gradient for clips */}
           <linearGradient id="metal-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#a37c3f" />
-            <stop offset="25%" stopColor="#d1b46a" />
-            <stop offset="50%" stopColor="#f7e7a8" />
-            <stop offset="75%" stopColor="#ffd875" />
-            <stop offset="85%" stopColor="#c29a4f" />
-            <stop offset="100%" stopColor="#805e26" />
+            <stop offset="0%" stopColor="#3d6b55" />
+            <stop offset="25%" stopColor="#5a9a7a" />
+            <stop offset="50%" stopColor="#8dc4a8" />
+            <stop offset="75%" stopColor="#6aad88" />
+            <stop offset="85%" stopColor="#4A8B6F" />
+            <stop offset="100%" stopColor="#2d5040" />
           </linearGradient>
 
-          {/* Gold gradient for rivets and buttons */}
+          {/* Sage gradient for rivets and buttons */}
           <radialGradient id="gold-grad" cx="35%" cy="35%" r="65%">
-            <stop offset="0%" stopColor="#fdf3cd" />
-            <stop offset="50%" stopColor="#c4956a" />
-            <stop offset="100%" stopColor="#533820" />
+            <stop offset="0%" stopColor="#b8e0cc" />
+            <stop offset="50%" stopColor="#4A8B6F" />
+            <stop offset="100%" stopColor="#1e3a2c" />
           </radialGradient>
 
           {/* Path routes that text will follow */}
@@ -389,7 +389,7 @@ export const HangingIDCard = () => {
         <path
           ref={leftStrapRef}
           d="" fill="none"
-          stroke="#3d2612"
+          stroke="#1e3a2c"
           strokeWidth="28"
           strokeLinecap="round" strokeLinejoin="round"
           opacity="0.18"
@@ -400,7 +400,7 @@ export const HangingIDCard = () => {
         <path
           ref={rightStrapRef}
           d="" fill="none"
-          stroke="#3d2612"
+          stroke="#1e3a2c"
           strokeWidth="28"
           strokeLinecap="round" strokeLinejoin="round"
           opacity="0.18"
@@ -445,7 +445,7 @@ export const HangingIDCard = () => {
 
         {/* LEFT STRAP TEXT */}
         <text
-          fill="#fdf6ec"
+          fill="#e8f5ee"
           fontSize="9.5"
           fontFamily="Inter, Arial, sans-serif"
           fontWeight="800"
@@ -460,7 +460,7 @@ export const HangingIDCard = () => {
 
         {/* RIGHT STRAP TEXT */}
         <text
-          fill="#fdf6ec"
+          fill="#e8f5ee"
           fontSize="9.5"
           fontFamily="Inter, Arial, sans-serif"
           fontWeight="800"
@@ -474,9 +474,9 @@ export const HangingIDCard = () => {
         </text>
 
         {/* Peg / Mount */}
-        <circle ref={pegRef}    r="14"  fill="url(#metal-grad)" stroke="#3d2612" strokeWidth="2.5" />
-        <circle ref={pegHighRef} r="7"  fill="url(#gold-grad)" />
-        <circle ref={pegScrewRef} r="2.5" fill="#3d2612" />
+        <circle ref={pegRef} r="14" fill="url(#metal-grad)" stroke="#1e3a2c" strokeWidth="2.5" />
+        <circle ref={pegHighRef} r="7" fill="url(#gold-grad)" />
+        <circle ref={pegScrewRef} r="2.5" fill="#1e3a2c" />
 
         {/* Metallic Clip System */}
         <g ref={clipGroupRef} style={{ pointerEvents: 'none' }}>
@@ -484,10 +484,10 @@ export const HangingIDCard = () => {
           <rect
             x="-14" y="-8" width="28" height="16" rx="3"
             fill="url(#metal-grad)"
-            stroke="#533820" strokeWidth="1"
+            stroke="#1e3a2c" strokeWidth="1"
           />
-          <circle cx="0" cy="0" r="3.5" fill="url(#gold-grad)" stroke="#3d2612" strokeWidth="0.8" />
-          
+          <circle cx="0" cy="0" r="3.5" fill="url(#gold-grad)" stroke="#1e3a2c" strokeWidth="0.8" />
+
           {/* D-Ring */}
           <path
             d="M-9,8 L-9,12 A9,9 0 0 0 9,12 L9,8"
@@ -501,7 +501,7 @@ export const HangingIDCard = () => {
           <rect
             x="-4.5" y="15" width="9" height="5" rx="1.5"
             fill="url(#metal-grad)"
-            stroke="#3d2612" strokeWidth="0.8"
+            stroke="#1e3a2c" strokeWidth="0.8"
           />
 
           {/* Vinyl connector strap */}
@@ -519,12 +519,12 @@ export const HangingIDCard = () => {
             ref={snapButtonRef}
             cx="0" cy="0" r="5"
             fill="url(#metal-grad)"
-            stroke="#3d2612" strokeWidth="0.8"
+            stroke="#1e3a2c" strokeWidth="0.8"
           />
           <circle
             ref={snapButtonInnerRef}
             cx="0" cy="0" r="2"
-            fill="#3d2612"
+            fill="#1e3a2c"
           />
         </g>
       </svg>
@@ -541,9 +541,9 @@ export const HangingIDCard = () => {
           willChange: 'transform, left, top',
           zIndex: 10,
           borderRadius: 20,
-          background: 'linear-gradient(165deg,#fdf9f3 0%,#f7ede0 55%,#eee0cc 100%)',
-          border: '1.5px solid rgba(196,168,120,0.55)',
-          boxShadow: '0 28px 70px -12px rgba(90,55,20,0.30),0 8px 24px -6px rgba(90,55,20,0.16),inset 0 1px 0 rgba(255,255,255,0.95)',
+          background: 'linear-gradient(165deg,#f7faf8 0%,#eef5f0 55%,#dfeae2 100%)',
+          border: '1.5px solid rgba(74,139,111,0.35)',
+          boxShadow: '0 28px 70px -12px rgba(30,58,44,0.22),0 8px 24px -6px rgba(30,58,44,0.12),inset 0 1px 0 rgba(255,255,255,0.95)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -552,118 +552,136 @@ export const HangingIDCard = () => {
       >
         {/* Badge slot */}
         <div style={{
-          position:'absolute',top:14,left:'50%',transform:'translateX(-50%)',
-          width:36,height:8,borderRadius:4,
-          background:'#1a1005',
-          border:'1.5px solid rgba(196,149,106,0.6)',
-          boxShadow:'inset 0 2px 4px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1)',
-          zIndex:3,
+          position: 'absolute', top: 14, left: '50%', transform: 'translateX(-50%)',
+          width: 36, height: 8, borderRadius: 4,
+          background: '#0f1f18',
+          border: '1.5px solid rgba(74,139,111,0.5)',
+          boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.1)',
+          zIndex: 3,
         }} />
 
         {/* Top stripe */}
         <div style={{
-          width:'100%',height:72,flexShrink:0,
-          background:'linear-gradient(135deg,#c4956a 0%,#a8784a 50%,#7a5535 100%)',
-          display:'flex',alignItems:'center',justifyContent:'center',
-          position:'relative',overflow:'hidden',
+          width: '100%', height: 72, flexShrink: 0,
+          background: 'linear-gradient(135deg,#4A8B6F 0%,#3d7a60 50%,#2d5a46 100%)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          position: 'relative', overflow: 'hidden',
         }}>
-          <div style={{ position:'absolute',inset:0,opacity:0.15,
-            backgroundImage:'repeating-linear-gradient(45deg,rgba(255,255,255,0.3) 0,rgba(255,255,255,0.3) 1px,transparent 0,transparent 50%)',
-            backgroundSize:'6px 6px' }} />
-          <span style={{ color:'rgba(255,255,255,0.92)',fontSize:12,fontWeight:700,
-            letterSpacing:3.5,fontFamily:'Inter,sans-serif',textTransform:'uppercase',position:'relative' }}>
+          <div style={{
+            position: 'absolute', inset: 0, opacity: 0.15,
+            backgroundImage: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.3) 0,rgba(255,255,255,0.3) 1px,transparent 0,transparent 50%)',
+            backgroundSize: '6px 6px'
+          }} />
+          <span style={{
+            color: 'rgba(255,255,255,0.92)', fontSize: 12, fontWeight: 700,
+            letterSpacing: 3.5, fontFamily: 'Inter,sans-serif', textTransform: 'uppercase', position: 'relative'
+          }}>
             AI &amp; ML • 2026
           </span>
         </div>
 
         {/* Avatar */}
-        <div style={{ marginTop:-34,position:'relative',zIndex:2,flexShrink:0 }}>
-          <div style={{ width:88,height:88,borderRadius:'50%',
-            background:'linear-gradient(135deg,#c4956a,#a8784a)',padding:3,
-            boxShadow:'0 4px 18px rgba(100,60,20,0.35)' }}>
-            <div style={{ width:'100%',height:'100%',borderRadius:'50%',
-              overflow:'hidden',
-              display:'flex',alignItems:'center',justifyContent:'center' }}>
+        <div style={{ marginTop: -34, position: 'relative', zIndex: 2, flexShrink: 0 }}>
+          <div style={{
+            width: 88, height: 88, borderRadius: '50%',
+            background: 'linear-gradient(135deg,#4A8B6F,#3d7a60)', padding: 3,
+            boxShadow: '0 4px 18px rgba(30,58,44,0.35)'
+          }}>
+            <div style={{
+              width: '100%', height: '100%', borderRadius: '50%',
+              overflow: 'hidden',
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
               <img
                 src={portrait}
                 alt="Paul Shervin avatar"
-                style={{ width:'100%', height:'100%', objectFit:'cover' }}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             </div>
           </div>
         </div>
 
         {/* Name & role */}
-        <div style={{ textAlign:'center',padding:'11px 20px 0',flexShrink:0 }}>
-          <div style={{ fontSize:18,fontWeight:800,color:'#3a2510',fontFamily:'Inter,sans-serif',lineHeight:1.2 }}>
+        <div style={{ textAlign: 'center', padding: '11px 20px 0', flexShrink: 0 }}>
+          <div style={{ fontSize: 18, fontWeight: 800, color: '#1e3a2c', fontFamily: 'Karla, sans-serif', lineHeight: 1.2 }}>
             {demoData.meta.name}
           </div>
-          <div style={{ fontSize:13,color:'#c4956a',fontWeight:600,marginTop:4,letterSpacing:0.5,fontFamily:'Inter,sans-serif' }}>
+          <div style={{ fontSize: 13, color: '#4A8B6F', fontWeight: 600, marginTop: 4, letterSpacing: 0.5, fontFamily: 'Karla, sans-serif' }}>
             {demoData.meta.role}
           </div>
         </div>
 
         {/* Location */}
-        <div style={{ display:'flex',alignItems:'center',gap:5,marginTop:6,flexShrink:0 }}>
-          <MapPin size={12} color="#a8784a" />
-          <span style={{ fontSize:11,color:'#7a5535',fontFamily:'Inter,sans-serif' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 6, flexShrink: 0 }}>
+          <MapPin size={12} color="#3d7a60" />
+          <span style={{ fontSize: 11, color: '#2d5a46', fontFamily: 'Karla, sans-serif' }}>
             {demoData.meta.location}
           </span>
         </div>
 
         {/* Divider */}
-        <div style={{ width:'calc(100% - 40px)',height:1,
-          background:'linear-gradient(90deg,transparent,rgba(196,149,106,0.5),transparent)',
-          margin:'11px 20px 0',flexShrink:0 }} />
+        <div style={{
+          width: 'calc(100% - 40px)', height: 1,
+          background: 'linear-gradient(90deg,transparent,rgba(74,139,111,0.4),transparent)',
+          margin: '11px 20px 0', flexShrink: 0
+        }} />
 
         {/* Skill chips */}
-        <div style={{ display:'flex',flexWrap:'wrap',gap:5,padding:'9px 14px 0',justifyContent:'center',flexShrink:0 }}>
-          {['Machine Learning','Deep Learning','Generative AI'].map(s => (
-            <span key={s} style={{ fontSize:10,fontWeight:600,color:'#8b6240',
-              background:'rgba(196,149,106,0.18)',border:'1px solid rgba(196,149,106,0.35)',
-              borderRadius:20,padding:'4px 10px',fontFamily:'Inter,sans-serif' }}>{s}</span>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, padding: '9px 14px 0', justifyContent: 'center', flexShrink: 0 }}>
+          {['Machine Learning', 'Deep Learning', 'Generative AI'].map(s => (
+            <span key={s} style={{
+              fontSize: 10, fontWeight: 600, color: '#2d5a46',
+              background: 'rgba(74,139,111,0.14)', border: '1px solid rgba(74,139,111,0.3)',
+              borderRadius: 20, padding: '4px 10px', fontFamily: 'Karla, sans-serif'
+            }}>{s}</span>
           ))}
         </div>
 
         {/* Stats */}
-        <div style={{ display:'flex',gap:10,padding:'10px 16px 0',width:'100%',flexShrink:0 }}>
-          {[{ val:demoData.leetcode.rating,label:'LC Rating' },{ val:demoData.leetcode.streak,label:'Day Streak' }].map(({ val,label }) => (
-            <div key={label} style={{ flex:1,textAlign:'center',padding:'10px 4px',
-              background:'rgba(196,149,106,0.13)',borderRadius:12,border:'1px solid rgba(196,149,106,0.28)' }}>
-              <div style={{ fontSize:20,fontWeight:800,color:'#c4956a',fontFamily:'Inter,sans-serif' }}>{val}</div>
-              <div style={{ fontSize:10,color:'#9a7a5a',fontFamily:'Inter,sans-serif',marginTop:2 }}>{label}</div>
+        <div style={{ display: 'flex', gap: 10, padding: '10px 16px 0', width: '100%', flexShrink: 0 }}>
+          {[{ val: demoData.leetcode.rating, label: 'LC Rating' }, { val: demoData.leetcode.streak, label: 'Day Streak' }].map(({ val, label }) => (
+            <div key={label} style={{
+              flex: 1, textAlign: 'center', padding: '10px 4px',
+              background: 'rgba(74,139,111,0.1)', borderRadius: 12, border: '1px solid rgba(74,139,111,0.22)'
+            }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: '#4A8B6F', fontFamily: 'Karla, sans-serif' }}>{val}</div>
+              <div style={{ fontSize: 10, color: '#5a8a72', fontFamily: 'Karla, sans-serif', marginTop: 2 }}>{label}</div>
             </div>
           ))}
         </div>
 
         {/* Social icons */}
-        <div style={{ display:'flex',gap:8,padding:'10px 16px 0',justifyContent:'center',flexShrink:0 }}>
-          {socialLinks.map(({ icon:Icon,href,label }) => (
+        <div style={{ display: 'flex', gap: 8, padding: '10px 16px 0', justifyContent: 'center', flexShrink: 0 }}>
+          {socialLinks.map(({ icon: Icon, href, label }) => (
             <a key={label} href={href}
-              target={href.startsWith('mailto')?undefined:'_blank'}
+              target={href.startsWith('mailto') ? undefined : '_blank'}
               rel="noopener noreferrer"
               onPointerDown={e => e.stopPropagation()}
               onClick={e => e.stopPropagation()}
               title={label}
-              style={{ width:36,height:36,borderRadius:10,
-                background:'rgba(196,149,106,0.16)',border:'1px solid rgba(196,149,106,0.32)',
-                display:'flex',alignItems:'center',justifyContent:'center',
-                color:'#8b6240',textDecoration:'none' }}>
+              style={{
+                width: 36, height: 36, borderRadius: 10,
+                background: 'rgba(74,139,111,0.12)', border: '1px solid rgba(74,139,111,0.25)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#2d5a46', textDecoration: 'none'
+              }}>
               <Icon size={15} />
             </a>
           ))}
         </div>
 
         {/* Barcode strip */}
-        <div style={{ marginTop:'auto',width:'100%',padding:'7px 14px',
-          background:'rgba(196,149,106,0.09)',borderTop:'1px solid rgba(196,149,106,0.22)',
-          display:'flex',alignItems:'center',justifyContent:'center',gap:7,flexShrink:0 }}>
-          <div style={{ display:'flex',gap:1.5,alignItems:'center' }}>
-            {[3,1,4,1,5,2,3,1,2,4,1,3,2,1,4,2,3].map((h,i) => (
-              <div key={i} style={{ width:1.5,height:h*2+5,background:'#8b6240',borderRadius:1,opacity:0.72 }} />
+        <div style={{
+          marginTop: 'auto', width: '100%', padding: '7px 14px',
+          background: 'rgba(74,139,111,0.07)', borderTop: '1px solid rgba(74,139,111,0.18)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, flexShrink: 0
+        }}>
+          <div style={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+            {[3, 1, 4, 1, 5, 2, 3, 1, 2, 4, 1, 3, 2, 1, 4, 2, 3].map((h, i) => (
+              <div key={i} style={{ width: 1.5, height: h * 2 + 5, background: '#2d5a46', borderRadius: 1, opacity: 0.72 }} />
             ))}
           </div>
-          <span style={{ fontSize:8,color:'#a8784a',fontFamily:'monospace',letterSpacing:1.2 }}>PS-2026-AIML</span>
+          <span style={{ fontSize: 8, color: '#3d7a60', fontFamily: 'monospace', letterSpacing: 1.2 }}>PS-2026-AIML</span>
         </div>
       </div>
     </div>

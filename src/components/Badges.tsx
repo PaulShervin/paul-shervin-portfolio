@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
-import { Award } from 'lucide-react';
+import { Award, Loader2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { usePortfolioData } from '../hooks/usePortfolioData';
 import demoData from '../data/demo-data.json';
 
 interface BadgeCardProps {
@@ -10,6 +12,8 @@ interface BadgeCardProps {
 }
 
 const BadgeCard = ({ name, source, image, delay }: BadgeCardProps) => {
+  const isRealImage = image && (image.startsWith('http') || image.startsWith('/'));
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -43,15 +47,31 @@ const BadgeCard = ({ name, source, image, delay }: BadgeCardProps) => {
       
       {/* Badge Image */}
       <motion.div 
-        className="w-14 h-14 flex items-center justify-center relative z-10"
+        className="w-16 h-16 flex items-center justify-center relative z-10"
         whileHover={{ 
-          scale: 1.1,
+          scale: 1.15,
           rotate: [0, -3, 3, 0],
           transition: { duration: 0.4 }
         }}
       >
-        <div className="w-full h-full rounded-full bg-muted/20 flex items-center justify-center">
-          <Award className="w-7 h-7 text-primary" />
+        {isRealImage ? (
+          <img 
+            src={image} 
+            alt={name} 
+            className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(244,180,26,0.2)] transition-transform duration-300"
+            onError={(e) => {
+              // Hide image and show fallback Award icon if it fails to load
+              e.currentTarget.style.display = 'none';
+              const fallback = e.currentTarget.nextSibling as HTMLElement;
+              if (fallback) fallback.style.display = 'flex';
+            }}
+          />
+        ) : null}
+        <div 
+          className="w-full h-full rounded-full bg-muted/20 flex items-center justify-center"
+          style={{ display: isRealImage ? 'none' : 'flex' }}
+        >
+          <Award className="w-8 h-8 text-primary" />
         </div>
       </motion.div>
       
@@ -69,6 +89,118 @@ const BadgeCard = ({ name, source, image, delay }: BadgeCardProps) => {
 };
 
 export const Badges = () => {
+  const { profileQuery } = usePortfolioData();
+  const profile = profileQuery.data;
+
+  // Extract LeetCode username from profile or fallback
+  const leetcodeUrl = profile?.socials?.leetcode || 'https://leetcode.com/u/paulshervinp/';
+  const leetcodeUsername = leetcodeUrl.replace(/\/$/, '').split('/').pop() || 'paulshervinp';
+
+  // Extract GitHub username from profile or fallback
+  const githubUrl = profile?.socials?.github || 'https://github.com/PaulShervin';
+  const githubUsername = githubUrl.replace(/\/$/, '').split('/').pop() || 'PaulShervin';
+
+  // Fetch LeetCode badges dynamically
+  const { data: leetcodeBadges, isLoading: isLeetcodeLoading } = useQuery({
+    queryKey: ['leetcodeBadges', leetcodeUsername],
+    queryFn: async () => {
+      const response = await fetch(`https://alfa-leetcode-api.onrender.com/${leetcodeUsername}/badges`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch LeetCode badges');
+      }
+      const data = await response.json();
+      return data.badges || [];
+    },
+    retry: 2,
+    staleTime: 1000 * 60 * 30, // 30 minutes cache
+  });
+
+  // Fetch GitHub achievements dynamically
+  const { data: githubBadges, isLoading: isGithubLoading } = useQuery({
+    queryKey: ['githubBadges', githubUsername],
+    queryFn: async () => {
+      const corsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://github.com/${githubUsername}`)}`;
+      const response = await fetch(corsUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch GitHub profile HTML');
+      }
+      const data = await response.json();
+      const html = data.contents;
+      if (!html) return [];
+      
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const achievementsList: any[] = [];
+      
+      // Target the achievement images in the profile sidebar
+      const achievementElements = doc.querySelectorAll('.achievement-badge-sidebar, img[data-hovercard-type="achievement"]');
+      achievementElements.forEach((img) => {
+        const name = img.getAttribute('alt')?.replace('Achievement: ', '') || '';
+        const image = img.getAttribute('src') || '';
+        if (name && image) {
+          if (!achievementsList.some(item => item.name === name)) {
+            achievementsList.push({
+              name,
+              source: 'GitHub',
+              image,
+            });
+          }
+        }
+      });
+      return achievementsList;
+    },
+    retry: 2,
+    staleTime: 1000 * 60 * 30, // 30 minutes cache
+  });
+
+  // Define GitHub profile achievement names to filter out of mock achievements
+  const githubProfileAchievementNames = [
+    'Pull Shark',
+    'YOLO',
+    'Pair Extraordinary',
+    'Quickdraw',
+    'Galaxy Brain',
+    'Arctic Code Vault Contributor',
+    'Public Sponsor',
+    'Starstruck'
+  ];
+
+  // Filter out static LeetCode badges and specific static GitHub profile achievements
+  const staticFilteredBadges = demoData.badges.filter(b => 
+    b.source !== 'LeetCode' && 
+    !(b.source === 'GitHub' && githubProfileAchievementNames.includes(b.name))
+  );
+
+  // Map LeetCode badges
+  const mappedLeetcodeBadges = (leetcodeBadges || []).map((badge: any) => {
+    let iconUrl = badge.icon;
+    if (iconUrl && iconUrl.startsWith('/')) {
+      iconUrl = `https://leetcode.com${iconUrl}`;
+    }
+    return {
+      name: badge.displayName,
+      source: 'LeetCode',
+      image: iconUrl,
+    };
+  });
+
+  // Combine static non-dynamic achievements with fetched ones
+  const finalLeetcode = (leetcodeBadges && leetcodeBadges.length > 0)
+    ? mappedLeetcodeBadges
+    : demoData.badges.filter(b => b.source === 'LeetCode');
+
+  const finalGithub = (githubBadges && githubBadges.length > 0)
+    ? githubBadges
+    : demoData.badges.filter(b => b.source === 'GitHub' && githubProfileAchievementNames.includes(b.name));
+
+  const displayBadges = [
+    ...staticFilteredBadges,
+    ...finalLeetcode,
+    ...finalGithub
+  ];
+
+  const isLoading = isLeetcodeLoading || isGithubLoading;
+
   return (
     <section id="badges" className="py-16 md:py-24 relative overflow-hidden bg-background">
       <div className="container mx-auto px-6 max-w-6xl">
@@ -82,14 +214,15 @@ export const Badges = () => {
           <h2 className="text-3xl md:text-5xl font-bold mb-4 text-gradient">
             Achieved Badges
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg">
+          <p className="text-muted-foreground text-base md:text-lg flex items-center justify-center gap-2">
             Milestones that reflect the journey of continuous growth and mastery 🏆
+            {isLoading && <Loader2 className="w-5 h-5 animate-spin text-primary inline-block ml-2" />}
           </p>
         </motion.div>
 
         {/* Badges Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6">
-          {demoData.badges.map((badge, index) => (
+          {displayBadges.map((badge, index) => (
             <BadgeCard
               key={`${badge.name}-${index}`}
               name={badge.name}

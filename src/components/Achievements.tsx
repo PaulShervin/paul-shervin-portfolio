@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Trophy, Medal, Code, Sparkles } from 'lucide-react';
 import { Badge } from './ui/badge';
-import demoData from '../data/demo-data.json';
+import { usePortfolioData } from '@/hooks/usePortfolioData';
 
 const getIcon = (type: string) => {
   switch (type) {
@@ -43,6 +43,13 @@ const getIconColor = (type: string) => {
 };
 
 export const Achievements = () => {
+  const { achievementsQuery } = usePortfolioData();
+  const achievements = achievementsQuery.data || [];
+
+  const hackathonCount = achievements.filter(a => a.category?.toLowerCase() === 'hackathon').length;
+  const codingCount = achievements.filter(a => a.category?.toLowerCase() === 'coding').length;
+  const projectCount = achievements.filter(a => a.category?.toLowerCase() === 'project').length;
+
   return (
     <section id="achievements" className="py-20 md:py-32 relative overflow-hidden">
       <div className="container mx-auto px-6">
@@ -60,10 +67,11 @@ export const Achievements = () => {
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {demoData.achievements.map((achievement, index) => {
-            const Icon = getIcon(achievement.type);
-            const gradient = getGradient(achievement.type);
-            const iconColor = getIconColor(achievement.type);
+          {achievements.map((achievement, index) => {
+            const category = achievement.category || 'other';
+            const Icon = getIcon(category);
+            const gradient = getGradient(category);
+            const iconColor = getIconColor(category);
 
             return (
               <motion.div
@@ -90,10 +98,10 @@ export const Achievements = () => {
                       <Icon className={`w-7 h-7 ${iconColor}`} />
                     </motion.div>
                     <Badge variant="outline" className="capitalize">
-                      {achievement.type}
+                      {category}
                     </Badge>
                   </div>
-
+ 
                   {/* Title */}
                   <motion.h3
                     className="text-xl font-bold mb-2 group-hover:text-primary transition-colors"
@@ -102,18 +110,18 @@ export const Achievements = () => {
                   >
                     {achievement.title}
                   </motion.h3>
-
+ 
                   {/* Event */}
                   <p className="text-sm text-primary/80 font-medium mb-3">
-                    {achievement.event}
+                    {achievement.organization}
                   </p>
-
+ 
                   {/* Description */}
                   <p className="text-muted-foreground text-sm leading-relaxed">
                     {achievement.description}
                   </p>
                 </div>
-
+ 
                 {/* Decorative Corner */}
                 <div className="absolute -bottom-2 -right-2 w-20 h-20 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </motion.div>
@@ -132,19 +140,19 @@ export const Achievements = () => {
           <div className="flex items-center gap-3">
             <Trophy className="w-6 h-6 text-yellow-500" />
             <span className="text-lg font-medium">
-              <span className="text-2xl font-bold text-gradient">3</span> Hackathon Wins
+              <span className="text-2xl font-bold text-gradient">{hackathonCount}</span> Hackathon Wins
             </span>
           </div>
           <div className="flex items-center gap-3">
             <Code className="w-6 h-6 text-blue-500" />
             <span className="text-lg font-medium">
-              <span className="text-2xl font-bold text-gradient">2</span> Coding Awards
+              <span className="text-2xl font-bold text-gradient">{codingCount}</span> Coding Awards
             </span>
           </div>
           <div className="flex items-center gap-3">
             <Sparkles className="w-6 h-6 text-purple-500" />
             <span className="text-lg font-medium">
-              <span className="text-2xl font-bold text-gradient">1</span> Project Award
+              <span className="text-2xl font-bold text-gradient">{projectCount}</span> Project Award
             </span>
           </div>
         </motion.div>

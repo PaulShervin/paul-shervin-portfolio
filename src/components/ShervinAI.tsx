@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Bot, User } from 'lucide-react';
+import { X, User } from 'lucide-react';
+import portrait from '@/assets/hero-portrait.png';
 
 /* ─── Chat tree data structure ─── */
 interface ChatNode {
@@ -297,7 +298,7 @@ const chatTree: Record<string, ChatNode> = {
   },
   contact_leetcode: {
     id: 'contact_leetcode',
-    message: '🧩 leetcode.com/paulshervin\n\n📊 247+ Solved • ⭐ 1654 Rating • 🔥 42 Day Streak',
+    message: '🧩 leetcode.com/u/paulshervinp/\n\n📊 247+ Solved • ⭐ 1654 Rating • 🔥 42 Day Streak',
     options: [
       { label: 'Email', emoji: '✉️', nextId: 'contact_email' },
       { label: 'LinkedIn', emoji: '💼', nextId: 'contact_linkedin' },
@@ -384,8 +385,9 @@ export const ShervinAI = ({
           {/* ── Header ── */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border/40 bg-[hsl(var(--card))]">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <Bot className="w-4 h-4 text-primary-foreground" />
+              <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <img src={portrait} alt="Paul Shervin" className="w-full h-full object-cover rounded-full" />
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-[hsl(var(--card))] rounded-full animate-pulse" />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-foreground leading-tight">🤖 Shervin AI</h3>
@@ -425,8 +427,8 @@ export const ShervinAI = ({
                 className={`flex gap-2 ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.type === 'bot' && (
-                  <div className="shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mt-0.5">
-                    <Bot className="w-3 h-3 text-primary" />
+                  <div className="shrink-0 w-6 h-6 rounded-full overflow-hidden mt-0.5">
+                    <img src={portrait} alt="Paul Shervin" className="w-full h-full object-cover" />
                   </div>
                 )}
                 <div
@@ -453,8 +455,8 @@ export const ShervinAI = ({
                 animate={{ opacity: 1 }}
                 className="flex gap-2 items-start"
               >
-                <div className="shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Bot className="w-3 h-3 text-primary" />
+                <div className="shrink-0 w-6 h-6 rounded-full overflow-hidden">
+                  <img src={portrait} alt="Paul Shervin" className="w-full h-full object-cover" />
                 </div>
                 <div className="bg-muted/30 border border-border/20 rounded-2xl rounded-bl-sm px-3 py-2.5">
                   <div className="flex gap-1">
@@ -543,15 +545,19 @@ export const ShervinAIBubble = ({
             animate={{ rotate: 0, opacity: 1 }}
             exit={{ rotate: -90, opacity: 0 }}
             transition={{ duration: 0.2 }}
+            className="w-full h-full rounded-full overflow-hidden"
           >
-            <Bot className="w-6 h-6" />
+            <img src={portrait} alt="Paul Shervin" className="w-full h-full object-cover" />
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Subtle ping — only when closed */}
       {!isOpen && (
-        <span className="absolute inset-0 rounded-full bg-primary/30 animate-ping opacity-25 pointer-events-none" />
+        <>
+          <span className="absolute inset-0 rounded-full bg-primary/30 animate-ping opacity-25 pointer-events-none" />
+          <span className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-[hsl(var(--background))] rounded-full z-10 animate-pulse" />
+        </>
       )}
     </motion.button>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { setupSmoothScroll } from '@/utils/smoothScroll';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { CustomCursor } from '@/components/CustomCursor';
@@ -16,9 +16,35 @@ import { Certificates } from '@/components/Certificates';
 import { Contact } from '@/components/Contact';
 import { Footer } from '@/components/Footer';
 import { ShervinAI, ShervinAIBubble } from '@/components/ShervinAI';
+import { WelcomeIntro } from '@/components/WelcomeIntro';
+
+/**
+ * Determines whether the intro video should play:
+ * - Respects prefers-reduced-motion (skip intro)
+ * - Checks sessionStorage for previous playback
+ * - Supports ?intro=true URL param to force replay (dev mode)
+ */
+const shouldShowIntro = (): boolean => {
+  // Respect prefers-reduced-motion
+  if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return false;
+  }
+
+  // Dev override: ?intro=true forces replay
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('intro') === 'true') {
+    return true;
+  }
+
+  // Check sessionStorage
+  const introPlayed = sessionStorage.getItem('portfolioIntroPlayed');
+  return !introPlayed;
+};
 
 const Index = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const showIntro = useMemo(() => shouldShowIntro(), []);
+  const [introActive, setIntroActive] = useState(showIntro);
 
   useEffect(() => {
     const lenis = setupSmoothScroll();
@@ -35,9 +61,16 @@ const Index = () => {
     return () => window.removeEventListener('open-shervin-ai', handleOpen);
   }, []);
 
+  const handleIntroComplete = useCallback(() => {
+    setIntroActive(false);
+  }, []);
+
   return (
     <ThemeProvider defaultTheme="light">
       <div className="relative min-h-screen cursor-none">
+        {/* Welcome Intro Video Overlay */}
+        {introActive && <WelcomeIntro onIntroComplete={handleIntroComplete} />}
+
         <ScrollProgress />
         <CustomCursor />
         <Navbar />
@@ -83,3 +116,4 @@ const Index = () => {
 };
 
 export default Index;
+

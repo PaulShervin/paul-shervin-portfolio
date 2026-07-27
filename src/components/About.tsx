@@ -4,7 +4,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Download, GraduationCap, Rocket, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
-import demoData from '../data/demo-data.json';
+import { usePortfolioData } from '@/hooks/usePortfolioData';
 import { HangingIDCard } from './HangingIDCard';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -37,11 +37,18 @@ export const About = () => {
     );
   }, []);
 
+  const { profileQuery, projectsQuery, hackathonsQuery, certificationsQuery } = usePortfolioData();
+  const profile = profileQuery.data;
+
+  const name = profile?.name || "Paul Shervin";
+  const tagline = profile?.tagline || "Deep Learning, Generative & Agentic AI enthusiast";
+  const aboutBio = profile?.about || "I'm Paul Shervin...";
+
   const stats = [
-    { value: demoData.leetcode.problems_solved, label: 'Problems Solved', suffix: '+' },
-    { value: demoData.projects.length,           label: 'AI Projects',     suffix: '+' },
-    { value: demoData.hackathons.length,         label: 'Hackathons',      suffix: ''  },
-    { value: demoData.certificates.length,       label: 'Certifications',  suffix: '+' },
+    { value: profile?.leetcode?.problems_solved || 247, label: 'Problems Solved', suffix: '+' },
+    { value: projectsQuery.data?.length || 4,           label: 'AI Projects',     suffix: '+' },
+    { value: hackathonsQuery.data?.length || 5,         label: 'Hackathons',      suffix: ''  },
+    { value: certificationsQuery.data?.length || 4,       label: 'Certifications',  suffix: '+' },
   ];
 
   return (
@@ -79,10 +86,10 @@ export const About = () => {
               </motion.div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-3">
                 Hello, I'm{' '}
-                <span className="text-gradient">{demoData.meta.name.split(' ')[0]}</span>
+                <span className="text-gradient">{name.split(' ')[0]}</span>
               </h2>
               <p className="text-lg text-muted-foreground">
-                {demoData.meta.tagline}
+                {tagline}
               </p>
             </div>
 
@@ -94,7 +101,7 @@ export const About = () => {
                 </div>
                 <h3 className="text-lg font-semibold">Background</h3>
               </div>
-              <p className="text-foreground/80 leading-relaxed">{demoData.about}</p>
+              <p className="text-foreground/80 leading-relaxed">{aboutBio}</p>
             </div>
 
             {/* Stats grid */}
@@ -146,6 +153,13 @@ export const About = () => {
             <div className="animate-item flex flex-wrap gap-4 pt-2">
               <Button
                 size="lg"
+                onClick={() => {
+                  if (profile?.resumeUrl) {
+                    window.open(profile.resumeUrl, '_blank');
+                  } else {
+                    document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
                 className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground shadow-lg shadow-primary/20 group"
               >
                 <Download className="w-4 h-4 mr-2 group-hover:animate-bounce" />

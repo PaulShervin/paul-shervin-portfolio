@@ -9,44 +9,92 @@
   "socials": {
     "github": "https://github.com/paulshervin",
     "linkedin": "https://linkedin.com/in/paulshervin",
-    "leetcode": "https://leetcode.com/paulshervin",
+    "leetcode": "https://leetcode.com/u/paulshervinp/",
     "email": "paul.shervin@example.com"
   },
   "skills": [
     {
       "category": "Languages",
       "items": [
-        { "name": "Python", "level": 90 },
-        { "name": "Java", "level": 85 },
-        { "name": "JavaScript", "level": 70 },
-        { "name": "SQL", "level": 75 }
+        {
+          "name": "Python",
+          "level": 90
+        },
+        {
+          "name": "Java",
+          "level": 85
+        },
+        {
+          "name": "JavaScript",
+          "level": 70
+        },
+        {
+          "name": "SQL",
+          "level": 75
+        }
       ]
     },
     {
       "category": "ML & DL",
       "items": [
-        { "name": "TensorFlow", "level": 85 },
-        { "name": "PyTorch", "level": 80 },
-        { "name": "scikit-learn", "level": 88 },
-        { "name": "Hugging Face", "level": 82 }
+        {
+          "name": "TensorFlow",
+          "level": 85
+        },
+        {
+          "name": "PyTorch",
+          "level": 80
+        },
+        {
+          "name": "scikit-learn",
+          "level": 88
+        },
+        {
+          "name": "Hugging Face",
+          "level": 82
+        }
       ]
     },
     {
       "category": "Frameworks",
       "items": [
-        { "name": "React", "level": 75 },
-        { "name": "Node.js", "level": 70 },
-        { "name": "FastAPI", "level": 80 },
-        { "name": "Flask", "level": 85 }
+        {
+          "name": "React",
+          "level": 75
+        },
+        {
+          "name": "Node.js",
+          "level": 70
+        },
+        {
+          "name": "FastAPI",
+          "level": 80
+        },
+        {
+          "name": "Flask",
+          "level": 85
+        }
       ]
     },
     {
       "category": "DevOps & Tools",
       "items": [
-        { "name": "Git", "level": 90 },
-        { "name": "Docker", "level": 75 },
-        { "name": "PostgreSQL", "level": 78 },
-        { "name": "AWS", "level": 65 }
+        {
+          "name": "Git",
+          "level": 90
+        },
+        {
+          "name": "Docker",
+          "level": 75
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 78
+        },
+        {
+          "name": "AWS",
+          "level": 65
+        }
       ]
     }
   ],
@@ -73,7 +121,12 @@
       "id": "project-1",
       "title": "Smart Traffic Signal Optimization",
       "summary": "RL-based adaptive traffic control system reducing congestion by 35%",
-      "tech": ["Python", "Reinforcement Learning", "OpenAI Gym", "SUMO"],
+      "tech": [
+        "Python",
+        "Reinforcement Learning",
+        "OpenAI Gym",
+        "SUMO"
+      ],
       "description": "Developed an intelligent traffic management system using Deep Q-Networks (DQN) to dynamically adjust signal timings based on real-time traffic flow. The system reduces average waiting time and improves throughput in urban intersections.",
       "approach": "Implemented custom Gym environment simulating multi-intersection traffic, trained DQN agent with prioritized experience replay, and deployed model for real-time inference.",
       "metrics": "35% reduction in average wait time, 28% improvement in traffic flow",
@@ -85,7 +138,12 @@
       "id": "project-2",
       "title": "Document Summarizer",
       "summary": "Transformer-based abstractive summarization with prompt tuning",
-      "tech": ["Python", "Transformers", "BART", "LangChain"],
+      "tech": [
+        "Python",
+        "Transformers",
+        "BART",
+        "LangChain"
+      ],
       "description": "Built an advanced document summarization tool using fine-tuned BART model with custom prompt engineering for domain-specific summarization. Supports multi-document summarization and key insight extraction.",
       "approach": "Fine-tuned BART on domain-specific corpus, implemented prompt templates for different document types, integrated with LangChain for document processing pipeline.",
       "metrics": "ROUGE-L score of 0.42, 85% user satisfaction",
@@ -97,7 +155,12 @@
       "id": "project-3",
       "title": "Medical Image Segmentation",
       "summary": "U-Net architecture for precise tumor detection in CT scans",
-      "tech": ["Python", "PyTorch", "U-Net", "OpenCV"],
+      "tech": [
+        "Python",
+        "PyTorch",
+        "U-Net",
+        "OpenCV"
+      ],
       "description": "Developed a deep learning pipeline for automated tumor segmentation in medical CT scans. The U-Net model achieves high precision in identifying tumor boundaries, assisting radiologists in diagnosis.",
       "approach": "Implemented custom U-Net with attention mechanisms, data augmentation pipeline for medical images, and post-processing for smooth segmentation masks.",
       "metrics": "Dice coefficient: 0.89, IoU: 0.84",
@@ -109,13 +172,36 @@
       "id": "project-4",
       "title": "Agentic Workflow Orchestrator",
       "summary": "Autonomous AI agent with tool-calling and multi-step reasoning",
-      "tech": ["Python", "LangChain", "GPT-4", "LangGraph"],
+      "tech": [
+        "Python",
+        "LangChain",
+        "GPT-4",
+        "LangGraph"
+      ],
       "description": "Created an autonomous agent system that can break down complex tasks, use multiple tools (web search, calculators, APIs), and execute multi-step workflows with self-correction capabilities.",
       "approach": "Designed agentic architecture using LangGraph for state management, implemented ReAct pattern for reasoning + acting, integrated multiple tool APIs with function calling.",
       "metrics": "Successfully completes 78% of complex multi-step tasks",
       "repo": "https://github.com/paulshervin/agentic-workflow",
       "live": "",
       "screenshot": "project4.png"
+    },
+    {
+      "id": "project-5",
+      "title": "Finamte",
+      "summary": "AI-powered personal finance assistant that provides smart budgeting, spending insights, and investment guidance.",
+      "tech": [
+        "React.js",
+        "JavaScript",
+        "AI Recommendation Engine",
+        "OCR",
+        "Firebase"
+      ],
+      "description": "FinMate is an AI-powered personal finance assistant that provides smart budgeting, spending insights, and investment guidance, helping users manage their money effortlessly with contextual coaching and real-time insights.",
+      "approach": "Built using React and Firebase for data storage. Integrates generative AI models for personalized financial coaching, and handles UPI sync and OCR for auto-reading bill receipts.",
+      "metrics": "Saves average user 15% monthly, 95% budget accuracy",
+      "repo": "https://github.com/paulshervin/finmate",
+      "live": "",
+      "screenshot": "finmate.jpg"
     }
   ],
   "experience": [
@@ -144,11 +230,32 @@
   ],
   "hackathons": [
     {
+      "name": "HackNova(SRM)",
+      "year": "2026",
+      "role": "Team Lead (BlockBusters)",
+      "description": "Participated in HackNova, a blockchain-focused hackathon that provided valuable hands-on experience in blockchain technologies, decentralized systems, and collaborative problem-solving while significantly expanding our technical knowledge.",
+      "image": "/srm.jpg"
+    },
+    {
+      "name": "Synsara",
+      "year": "2025",
+      "role": "Frontend Engineer (NightShaders)",
+      "description": "Built an AI-powered health application at Synsara, my first hackathon experience, where I gained valuable exposure to rapid development, teamwork, and transforming an idea into a working solution.",
+      "image": "/synsara.jpg"
+    },
+    {
       "name": "Smart India Hackathon",
       "year": "2024",
       "role": "Team Lead",
       "description": "Led team of 5 to build AI-powered solution for government problem statement. Developed real-time anomaly detection system for public infrastructure monitoring. Advanced to national finals.",
-      "image": "/placeholder.svg"
+      "image": "/smart-india-hackathon.jpg"
+    },
+    {
+      "name": "OpenAI Academy x NxtWave Buildathon",
+      "year": "2025",
+      "role": "Grand Finalists (Team Sparklers)",
+      "description": "Recognized as national Grand Finalists in the OpenAI Academy x NxtWave Buildathon. Designed and implemented an advanced AI agent workflow, competing against top engineering teams across the country.",
+      "image": "/openai-nxtwave.png"
     },
     {
       "name": "IBM Datathon",
@@ -162,7 +269,7 @@
       "year": "2024",
       "role": "Full Stack Developer",
       "description": "Built sustainable development solution using Google Cloud technologies. Created mobile app for carbon footprint tracking with ML-based recommendations.",
-      "image": "/placeholder.svg"
+      "image": "/google-solution-challenge.png"
     },
     {
       "name": "HackMIT",
@@ -219,79 +326,94 @@
   ],
   "badges": [
     {
-      "name": "GitHub Foundations",
-      "source": "GitHub",
-      "image": "badge1.png"
-    },
-    {
-      "name": "Data Analytics Essentials",
-      "source": "IBM",
-      "image": "badge2.png"
-    },
-    {
-      "name": "Gemini Certified Student",
+      "name": "Google Solution Challenge",
       "source": "Google",
-      "image": "badge3.png"
+      "image": "/badge-solution-challenge.png"
     },
     {
-      "name": "50 Days Badge 2025",
+      "name": "100 Days Badge 2026",
       "source": "LeetCode",
-      "image": "badge4.png"
+      "image": "https://assets.leetcode.com/static_assets/others/100_1080_1080.png"
+    },
+    {
+      "name": "50 Days Badge 2026",
+      "source": "LeetCode",
+      "image": "https://assets.leetcode.com/static_assets/others/50_1080_1080.png"
     },
     {
       "name": "100 Days Badge 2025",
       "source": "LeetCode",
-      "image": "badge5.png"
+      "image": "https://assets.leetcode.com/static_assets/others/lg25100.png"
     },
     {
-      "name": "200 Days Badge 2025",
+      "name": "50 Days Badge 2025",
       "source": "LeetCode",
-      "image": "badge6.png"
+      "image": "https://assets.leetcode.com/static_assets/others/lg2550.png"
     },
     {
-      "name": "Top SQL 50",
+      "name": "Jun LeetCoding Challenge",
       "source": "LeetCode",
-      "image": "badge7.png"
+      "image": "https://leetcode.com/static/images/badges/dcc-2026-6.png"
     },
     {
-      "name": "LeetCode 75",
+      "name": "May LeetCoding Challenge",
       "source": "LeetCode",
-      "image": "badge8.png"
+      "image": "https://leetcode.com/static/images/badges/dcc-2026-5.png"
     },
     {
-      "name": "SQL Data Navigator",
+      "name": "Apr LeetCoding Challenge",
       "source": "LeetCode",
-      "image": "badge9.png"
+      "image": "https://leetcode.com/static/images/badges/dcc-2026-4.png"
     },
     {
-      "name": "Pull Shark",
-      "source": "GitHub",
-      "image": "badge10.png"
+      "name": "Mar LeetCoding Challenge",
+      "source": "LeetCode",
+      "image": "https://leetcode.com/static/images/badges/dcc-2026-3.png"
     },
     {
-      "name": "Arctic Code Vault Contributor",
-      "source": "GitHub",
-      "image": "badge11.png"
+      "name": "Feb LeetCoding Challenge",
+      "source": "LeetCode",
+      "image": "https://leetcode.com/static/images/badges/dcc-2026-2.png"
+    },
+    {
+      "name": "Jan LeetCoding Challenge",
+      "source": "LeetCode",
+      "image": "https://leetcode.com/static/images/badges/dcc-2026-1.png"
+    },
+    {
+      "name": "Dec LeetCoding Challenge",
+      "source": "LeetCode",
+      "image": "https://leetcode.com/static/images/badges/dcc-2025-12.png"
+    },
+    {
+      "name": "Nov LeetCoding Challenge",
+      "source": "LeetCode",
+      "image": "https://leetcode.com/static/images/badges/dcc-2025-11.png"
+    },
+    {
+      "name": "Oct LeetCoding Challenge",
+      "source": "LeetCode",
+      "image": "https://leetcode.com/static/images/badges/dcc-2025-10.png"
+    },
+    {
+      "name": "2026 Offer Expedition Badge",
+      "source": "LeetCode",
+      "image": "https://assets.leetcode.com/static_assets/others/10801080.png"
     },
     {
       "name": "YOLO",
       "source": "GitHub",
-      "image": "badge12.png"
+      "image": "https://github.githubassets.com/assets/yolo-default-be0bbff04951.png"
     },
     {
-      "name": "Pair Extraordinary",
+      "name": "Pull Shark",
       "source": "GitHub",
-      "image": "badge13.png"
+      "image": "https://github.githubassets.com/assets/pull-shark-default-498c279a747d.png"
     },
     {
       "name": "Quickdraw",
       "source": "GitHub",
-      "image": "badge14.png"
-    },
-    {
-      "name": "Galaxy Brain",
-      "source": "GitHub",
-      "image": "badge15.png"
+      "image": "https://github.githubassets.com/assets/quickdraw-default-39c6aec8ff89.png"
     }
   ],
   "certificates": [

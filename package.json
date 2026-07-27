@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
+    "dev": "node scripts/fetch-badges.js && vite",
+    "build": "node scripts/fetch-badges.js && vite build",
+    "build:dev": "node scripts/fetch-badges.js && vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -48,6 +48,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "firebase": "^12.15.0",
     "framer-motion": "^12.23.24",
     "gsap": "^3.13.0",
     "input-otp": "^1.4.2",

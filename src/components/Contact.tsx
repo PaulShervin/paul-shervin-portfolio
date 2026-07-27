@@ -5,9 +5,14 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import demoData from '../data/demo-data.json';
+import { usePortfolioData } from '@/hooks/usePortfolioData';
 
 export const Contact = () => {
+  const { profileQuery } = usePortfolioData();
+  const profile = profileQuery.data;
+  const email = profile?.socials?.email || "paul.shervin@example.com";
+  const location = profile?.location || "Saveetha Engineering College";
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -75,10 +80,10 @@ export const Contact = () => {
                   <div>
                     <h4 className="font-semibold mb-1">Email</h4>
                     <a 
-                      href={`mailto:${demoData.socials.email}`}
+                      href={`mailto:${email}`}
                       className="text-muted-foreground hover:text-primary transition-colors"
                     >
-                      {demoData.socials.email}
+                      {email}
                     </a>
                   </div>
                 </div>
@@ -89,7 +94,7 @@ export const Contact = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-1">Location</h4>
-                    <p className="text-muted-foreground">{demoData.meta.location}</p>
+                    <p className="text-muted-foreground">{location}</p>
                   </div>
                 </div>
               </div>
