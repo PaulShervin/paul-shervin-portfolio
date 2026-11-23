@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 import demoData from '../data/demo-data.json';
 
+const serif = { fontFamily: '"Cormorant Garamond", serif' };
+
 interface BadgeCardProps {
   name: string;
   source: string;
@@ -11,56 +13,18 @@ interface BadgeCardProps {
   delay: number;
 }
 
-const BadgeCard = ({ name, source, image, delay }: BadgeCardProps) => {
+const BadgeCard = ({ name, source, image }: BadgeCardProps) => {
   const isRealImage = image && (image.startsWith('http') || image.startsWith('/'));
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ 
-        duration: 0.5, 
-        delay: delay / 1000,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }}
-      viewport={{ once: true, margin: "-50px" }}
-      whileHover={{ 
-        scale: 1.05,
-        y: -8,
-        transition: { duration: 0.25, ease: [0.34, 1.26, 0.64, 1] }
-      }}
-      className="group relative rounded-xl p-4 py-5 transition-all duration-300
-        bg-[hsl(var(--skill-card-bg))] 
-        hover:bg-[hsl(var(--skill-card-hover))]
-        shadow-[var(--shadow-skill-card)]
-        hover:shadow-[var(--shadow-skill-hover)]
-        border border-border/10
-        hover:border-[hsl(var(--cyber-teal))]/50
-        cursor-default
-        flex flex-col items-center justify-center gap-3
-        overflow-hidden"
-    >
-      {/* Hover glow effect */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--cyber-teal))]/5 to-transparent" />
-      </div>
-      
-      {/* Badge Image */}
-      <motion.div 
-        className="w-16 h-16 flex items-center justify-center relative z-10"
-        whileHover={{ 
-          scale: 1.15,
-          rotate: [0, -3, 3, 0],
-          transition: { duration: 0.4 }
-        }}
-      >
+    <div className="group flex flex-col items-center justify-center gap-4 min-w-[140px] md:min-w-[180px] opacity-60 hover:opacity-100 transition-opacity duration-300 px-4 cursor-default">
+      <div className="w-20 h-20 md:w-28 md:h-28 relative flex items-center justify-center">
         {isRealImage ? (
           <img 
             src={image} 
             alt={name} 
-            className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(244,180,26,0.2)] transition-transform duration-300"
+            className="w-full h-full object-contain filter drop-shadow-md group-hover:scale-110 transition-transform duration-500"
             onError={(e) => {
-              // Hide image and show fallback Award icon if it fails to load
               e.currentTarget.style.display = 'none';
               const fallback = e.currentTarget.nextSibling as HTMLElement;
               if (fallback) fallback.style.display = 'flex';
@@ -68,23 +32,21 @@ const BadgeCard = ({ name, source, image, delay }: BadgeCardProps) => {
           />
         ) : null}
         <div 
-          className="w-full h-full rounded-full bg-muted/20 flex items-center justify-center"
+          className="w-full h-full rounded-full bg-muted/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500"
           style={{ display: isRealImage ? 'none' : 'flex' }}
         >
-          <Award className="w-8 h-8 text-primary" />
+          <Award className="w-8 h-8 text-primary/50" />
         </div>
-      </motion.div>
-      
-      {/* Badge Info */}
-      <div className="text-center relative z-10">
-        <h4 className="text-sm font-bold text-foreground mb-1">
+      </div>
+      <div className="text-center">
+        <h4 className="text-sm font-medium text-foreground/80 group-hover:text-foreground transition-colors max-w-[120px] md:max-w-[160px] leading-snug mx-auto" style={serif}>
           {name}
         </h4>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mt-2 font-mono">
           {source}
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -202,36 +164,42 @@ export const Badges = () => {
   const isLoading = isLeetcodeLoading || isGithubLoading;
 
   return (
-    <section id="badges" className="py-16 md:py-24 relative overflow-hidden bg-background">
-      <div className="container mx-auto px-6 max-w-6xl">
+    <section id="badges" className="pt-12 md:pt-16 pb-24 md:pb-32 relative overflow-hidden bg-background">
+      <div className="container mx-auto px-4 md:px-6 max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-16 md:mb-20"
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-gradient">
-            Achieved Badges
+          <h2 className="text-4xl md:text-6xl font-bold mb-4 tracking-tight" style={serif}>
+            Continuous <span className="italic text-primary/80 font-light">mastery.</span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg flex items-center justify-center gap-2">
-            Milestones that reflect the journey of continuous growth and mastery 🏆
-            {isLoading && <Loader2 className="w-5 h-5 animate-spin text-primary inline-block ml-2" />}
+          <p className="text-muted-foreground text-base md:text-lg flex items-center justify-center gap-2 max-w-xl mx-auto">
+            Milestones and achievements that reflect a journey of continuous growth and technical validation.
+            {isLoading && <Loader2 className="w-4 h-4 animate-spin text-primary/50" />}
           </p>
         </motion.div>
+      </div>
 
-        {/* Badges Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6">
-          {displayBadges.map((badge, index) => (
+      {/* Marquee Row */}
+      <div className="relative w-full overflow-hidden flex items-center [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+        <motion.div
+          className="flex items-center gap-8 md:gap-16 w-max shrink-0"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ ease: "linear", duration: 50, repeat: Infinity }}
+        >
+          {[...displayBadges, ...displayBadges].map((badge, index) => (
             <BadgeCard
               key={`${badge.name}-${index}`}
               name={badge.name}
               source={badge.source}
               image={badge.image}
-              delay={index * 40}
+              delay={0}
             />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Personal documents (not part of the site)
+*.xlsx
+*.ics
+hi.pdf
+/List of topics*.pdf
+/R2024*.pdf
+/AI Portfolio Terminal Portrait.png
+/AI_ML Developer Portfolio Terminal.png
+/BiasLAB Responsible AI Case Study.png
+/Pastel Green AI Portfolio About Page.png
+.agents/

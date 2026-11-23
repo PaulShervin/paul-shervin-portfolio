@@ -11,7 +11,6 @@ const navLinks = [
   { name: 'Skills', href: '#skills' },
   { name: 'Projects', href: '#projects' },
   { name: 'Hackathons', href: '#hackathons' },
-  { name: 'Certificates', href: '#certificates' },
   { name: 'Contact', href: '#contact' },
 ];
 
@@ -56,14 +55,20 @@ export const Navbar = () => {
 
   return (
     <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'glassmorphism shadow-lg' : 'bg-transparent'
-      }`}
+      initial={{ y: -100, x: "-50%" }}
+      animate={{ y: 0, x: "-50%" }}
+      className={`fixed left-1/2 z-50 transition-all duration-500 overflow-hidden ${isScrolled
+          ? `top-4 md:top-6 border border-primary/20 bg-background/90 backdrop-blur-2xl shadow-[0_8px_30px_-8px_rgba(0,0,0,0.12)] w-[92%] sm:w-[85%] md:w-max ${isMobileMenuOpen ? 'rounded-[2rem]' : 'rounded-full'
+          }`
+          : `top-0 w-full rounded-none border-b ${isMobileMenuOpen ? 'border-border/20 bg-background/95 backdrop-blur-2xl shadow-xl' : 'border-transparent bg-transparent'
+          }`
+        }`}
     >
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
+      <div className={`transition-all duration-500 mx-auto ${isScrolled
+          ? 'w-full px-4 py-2 md:px-5 md:py-2.5'
+          : 'container px-6 py-4 md:py-5'
+        }`}>
+        <div className="flex items-center justify-between gap-6 md:gap-10 w-full">
           {/* Logo */}
           <motion.a
             href="#home"
@@ -71,7 +76,7 @@ export const Navbar = () => {
               e.preventDefault();
               scrollToSection('#home');
             }}
-            className="text-2xl font-bold text-gradient cursor-pointer"
+            className="text-xl md:text-2xl font-bold text-gradient cursor-pointer shrink-0"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -79,7 +84,7 @@ export const Navbar = () => {
           </motion.a>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex justify-center items-center gap-1">
             {navLinks.map((link) => (
               <a
                 key={link.name}
@@ -88,7 +93,7 @@ export const Navbar = () => {
                   e.preventDefault();
                   scrollToSection(link.href);
                 }}
-                className="relative px-4 py-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors group"
+                className="relative px-3 py-1.5 md:px-4 md:py-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors group"
               >
                 {link.name}
                 <motion.span
@@ -109,7 +114,7 @@ export const Navbar = () => {
           </div>
 
           {/* Theme Toggle & Mobile Menu Button */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <Button
               variant="ghost"
               size="icon"
@@ -140,9 +145,9 @@ export const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glassmorphism border-t border-border/50"
+            className="md:hidden border-t border-border/20 bg-background/50"
           >
-            <div className="container mx-auto px-6 py-4 flex flex-col gap-2">
+            <div className="px-6 py-4 flex flex-col gap-2">
               {navLinks.map((link, index) => (
                 <motion.a
                   key={link.name}
@@ -154,11 +159,10 @@ export const Navbar = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    activeSection === link.href.substring(1)
+                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${activeSection === link.href.substring(1)
                       ? 'bg-primary/10 text-primary'
                       : 'text-foreground/80 hover:bg-muted'
-                  }`}
+                    }`}
                 >
                   {link.name}
                 </motion.a>

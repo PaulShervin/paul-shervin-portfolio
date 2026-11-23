@@ -1,337 +1,181 @@
-import { motion } from 'framer-motion';
-import { useState, useEffect, useCallback } from 'react';
-import { ChevronDown, ArrowRight, Download, Sparkles, Code2, Brain, Wand2, Database, Flame } from 'lucide-react';
-import { SiPython, SiTensorflow } from 'react-icons/si';
-import { FaJava } from 'react-icons/fa';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight, Download, Terminal } from 'lucide-react';
 import { Button } from './ui/button';
-import demoData from '../data/demo-data.json';
-import portrait from '@/assets/hero-main.jpg';
+import { HeroTerminal } from './HeroTerminal';
+import { usePortfolioData } from '@/hooks/usePortfolioData';
+import foreground from '@/assets/hero-foreground.webp';
 
-const serif = { fontFamily: '"Cormorant Garamond", serif' };
+const mono = { fontFamily: '"JetBrains Mono", "Courier New", monospace' };
+
+const FALLBACK_RESUME_URL = '/resume.pdf';
 
 const scrollToSection = (href: string) => {
   document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
 };
 
-const typewriterPhrases = [
-  'Building Intelligent Digital Experiences with AI.',
-  'Solving Real-World Problems with Deep Learning.',
-  'Creating the Future with Generative AI.',
-  'Engineering Agentic AI Systems.',
-];
-
-const useTypewriter = (phrases: string[], typingSpeed = 60, deletingSpeed = 35, pauseTime = 2000) => {
-  const [phraseIndex, setPhraseIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [displayText, setDisplayText] = useState('');
-
-  const tick = useCallback(() => {
-    const currentPhrase = phrases[phraseIndex];
-
-    if (!isDeleting) {
-      setDisplayText(currentPhrase.substring(0, charIndex + 1));
-      setCharIndex((prev) => prev + 1);
-
-      if (charIndex + 1 === currentPhrase.length) {
-        setTimeout(() => setIsDeleting(true), pauseTime);
-        return;
-      }
-    } else {
-      setDisplayText(currentPhrase.substring(0, charIndex - 1));
-      setCharIndex((prev) => prev - 1);
-
-      if (charIndex - 1 === 0) {
-        setIsDeleting(false);
-        setPhraseIndex((prev) => (prev + 1) % phrases.length);
-        return;
-      }
-    }
-  }, [phrases, phraseIndex, charIndex, isDeleting, pauseTime]);
-
-  useEffect(() => {
-    const speed = isDeleting ? deletingSpeed : typingSpeed;
-    const timer = setTimeout(tick, speed);
-    return () => clearTimeout(timer);
-  }, [tick, isDeleting, typingSpeed, deletingSpeed]);
-
-  return displayText;
-};
-
-const FloatingCard = ({
-  icon: Icon,
-  title,
-  text,
-  className,
-  delay,
-}: {
-  icon: any;
-  title: string;
-  text: string;
-  className?: string;
-  delay: number;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20, scale: 0.9 }}
-    animate={{ opacity: 1, y: 0, scale: 1 }}
-    transition={{ duration: 0.6, delay }}
-    className={`absolute hidden md:block w-56 lg:w-64 p-4 rounded-2xl bg-card/95 backdrop-blur-md border border-border shadow-[0_10px_40px_-15px_rgba(0,0,0,0.15)] ${className}`}
-  >
-    <motion.div
-      animate={{ y: [0, -8, 0] }}
-      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay }}
-      className="flex items-start gap-3"
-    >
-      <div className="shrink-0 w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center text-primary">
-        <Icon className="w-5 h-5" />
-      </div>
-      <div>
-        <h4 className="font-semibold text-foreground text-sm">{title}</h4>
-        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{text}</p>
-        <div className="w-8 h-0.5 bg-primary/60 mt-2" />
-      </div>
-    </motion.div>
-  </motion.div>
-);
-
-
-
-const TechPill = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
-  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-sm text-foreground/80 hover:border-primary/50 transition-colors">
-    <span className="text-primary">{icon}</span>
-    {label}
-  </div>
-);
+const badgeItems = ['AI/ML Engineer', 'Builder', 'Problem Solver'];
 
 export const Hero = () => {
-  const typedText = useTypewriter(typewriterPhrases, 60, 35, 2000);
+  const reduceMotion = useReducedMotion();
+  const { profileQuery } = usePortfolioData();
+  const resumeUrl = profileQuery.data?.resumeUrl || FALLBACK_RESUME_URL;
+
+  const enter = (delay: number, x = 0) => ({
+    initial: reduceMotion ? false : { opacity: 0, y: 18, x },
+    animate: { opacity: 1, y: 0, x: 0 },
+    transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] as const },
+  });
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-background pt-24 pb-12">
-      {/* Soft warm background accent */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-primary/10 blur-3xl" />
+    <section
+      id="home"
+      className="relative overflow-hidden bg-background pt-24 pb-14 md:pt-28 min-[1100px]:pt-[6.5rem] min-[1100px]:pb-16"
+    >
+      {/* Subtle dotted technical grid */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div className="absolute inset-0 bg-[radial-gradient(circle,hsl(var(--foreground)/0.07)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_80%)]" />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          {/* LEFT */}
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/40 text-primary text-sm mb-8"
+      <div className="container relative z-10 mx-auto w-full px-6">
+        {/* Two-column hero grid above 1100px: 0.9fr intro / 1.1fr composition */}
+        <div className="grid grid-cols-1 items-center gap-10 min-[1100px]:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] min-[1100px]:gap-[clamp(2rem,4vw,4rem)]">
+          {/* ── Left: introduction ── */}
+          <motion.div {...enter(0.05)} className="min-w-0">
+            <div
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3.5 py-1.5 text-xs font-medium text-foreground/80 shadow-sm backdrop-blur"
             >
-              <Sparkles className="w-4 h-4" />
-              Available for Collaboration
-            </motion.div>
+              <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
+              {badgeItems.map((item, i) => (
+                <span key={item} className="flex items-center gap-2">
+                  {i > 0 && <span className="text-muted-foreground/70" aria-hidden="true">·</span>}
+                  {item}
+                </span>
+              ))}
+            </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="leading-[0.9] mb-8"
-              style={serif}
+            <h1
+              className="mt-5 text-4xl font-bold leading-[1.05] tracking-[-0.02em] sm:text-5xl lg:text-[2.9rem] xl:text-[3.4rem]"
+              style={mono}
             >
-              <span className="block text-6xl md:text-7xl lg:text-8xl font-semibold text-foreground tracking-tight">
-                PAUL
+              <span className="block text-foreground">Hi, I’m</span>
+              <span className="mt-1 block text-primary">
+                Paul Shervin
+                <span
+                  aria-hidden="true"
+                  className="ml-1 inline-block h-[0.9em] w-[3px] translate-y-[0.1em] bg-foreground/70 animate-[blink_1s_steps(1)_infinite] motion-reduce:animate-none"
+                />
               </span>
-              <span className="block text-6xl md:text-7xl lg:text-8xl font-semibold text-primary tracking-tight">
-                SHERVIN
-              </span>
-            </motion.h1>
+            </h1>
 
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-xl md:text-2xl lg:text-3xl font-medium text-foreground mb-5 min-h-[4rem] md:min-h-[4.5rem]"
-            >
-              <span>{typedText}</span>
-              <span className="inline-block w-[3px] h-[1.1em] bg-primary ml-1 align-middle animate-[blink_0.8s_ease-in-out_infinite]" />
-            </motion.h2>
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-foreground/80 sm:text-lg xl:text-xl" style={mono}>
+              Solving real-world problems with <span className="text-primary">AI, ML</span> and{' '}
+              <span className="text-primary">full-stack development</span>.
+            </p>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-base text-muted-foreground max-w-md mb-8 border-l-2 border-primary/40 pl-4"
-            >
-              AI &amp; ML student passionate about building innovative solutions that solve real-world problems and create meaningful impact.
-            </motion.p>
+            <div className="mt-4 max-w-lg space-y-1 text-sm leading-relaxed text-foreground/65" style={mono}>
+              <p>B.Tech AI &amp; ML @ Saveetha Engineering College</p>
+              <p>Building AI products, participating in hackathons, and contributing to open source.</p>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex flex-wrap items-center gap-4 mb-10"
-            >
+            <div className="mt-7 flex flex-wrap items-center gap-3">
               <Button
                 size="lg"
                 onClick={() => scrollToSection('#projects')}
-                className="bg-primary hover:bg-accent text-primary-foreground rounded-xl px-7 shadow-[var(--shadow-elegant)]"
+                className="h-12 rounded-xl bg-foreground px-5 text-base xl:px-6 font-medium text-background shadow-[0_0_0_3px_hsl(var(--primary)/0.28),0_10px_24px_-12px_hsl(var(--primary)/0.6)] transition-all hover:-translate-y-0.5 hover:bg-foreground/90"
               >
-                <ArrowRight className="w-4 h-4 mr-2" />
+                <Terminal className="mr-1 h-4 w-4 text-primary-glow" />
                 View Projects
+                <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => scrollToSection('#contact')}
-                className="rounded-xl px-7 border-primary/40 text-primary hover:bg-primary/10"
+                onClick={() => window.open(resumeUrl, '_blank', 'noopener,noreferrer')}
+                className="h-12 rounded-xl border-border bg-card px-5 text-base xl:px-6 font-medium shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/5 hover:text-foreground"
               >
-                <Download className="w-4 h-4 mr-2" />
+                <Download className="mr-1 h-4 w-4 text-primary" />
                 Download Resume
               </Button>
-            </motion.div>
+            </div>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              whileHover={{ y: -4 }}
-              onClick={() => {
-                window.dispatchEvent(new CustomEvent('open-shervin-ai'));
-              }}
-              className="group max-w-xl mb-8 p-5 rounded-[20px] bg-card/80 border border-border/60
-                shadow-[0_4px_20px_-6px_hsl(var(--primary)/0.12)]
-                hover:shadow-[0_8px_30px_-6px_hsl(var(--primary)/0.3)]
-                hover:border-primary/30
-                cursor-pointer transition-all duration-300"
-            >
-              <div className="flex items-start gap-4">
-                <div className="shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center group-hover:from-primary/30 group-hover:to-accent/30 transition-colors duration-300">
-                  <span className="text-2xl">🤖</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-base font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
-                    Ask Shervin AI
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Explore my journey, projects, skills, certifications and achievements through an interactive experience.
-                  </p>
-                </div>
-              </div>
-              <div className="mt-4 flex items-center justify-between">
-                <Button
-                  size="sm"
-                  className="bg-primary hover:bg-accent text-primary-foreground rounded-xl px-5 shadow-sm group-hover:shadow-[0_4px_16px_-4px_hsl(var(--primary)/0.4)] transition-shadow"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.dispatchEvent(new CustomEvent('open-shervin-ai'));
-                  }}
+          {/* ── Right: layered portrait + terminal + laptop composition ── */}
+          <motion.div {...enter(0.2, 16)} className="min-w-0 min-[1100px]:-mr-6">
+            {/*
+              Composition box. Below md it is a plain stacking context (mobile portrait
+              panel, then the terminal). From md up it becomes a fixed-aspect box and every
+              layer is absolutely positioned inside it, in percentages, so the overlap
+              geometry is identical at every width:
+                z-0  emerald glow            z-[1] mint panel        z-[2] annotation
+                z-10 terminal (HTML)         z-20 cut-out foreground (person, laptop, desk)
+              The foreground is cut from the reference artwork; where the shoulder and
+              laptop crossed the terminal those pixels are transparent, so the terminal
+              must span from the top of the box down to the desk line (bottom-[8%]).
+              Terminal type scales with the box via container-query units (cqw).
+            */}
+            <div className="relative mx-auto w-full max-w-[820px] [container-type:inline-size] md:aspect-[1/0.72] min-[1100px]:aspect-[1/0.78] xl:aspect-[1/0.72]">
+              {/* z-0: restrained emerald glow behind the composition */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-6 top-6 z-0 hidden h-64 rounded-full bg-primary/30 blur-3xl md:left-[42%] md:right-[2%] md:top-[10%] md:bottom-[10%] md:block md:h-auto"
+              />
+
+              {/* z-1: pale mint panel with a dotted texture, behind the portrait */}
+              <div
+                aria-hidden="true"
+                className="absolute left-[59%] right-[1%] top-[18%] bottom-[9.5%] z-[1] hidden rounded-[2rem] min-[1100px]:left-[59%] min-[1100px]:right-[2%] min-[1100px]:top-[26%] min-[1100px]:bottom-[8.5%] xl:left-[59%] xl:right-[1%] xl:top-[18%] xl:bottom-[9.5%] bg-emerald-100 [background-image:radial-gradient(circle,hsl(var(--primary)/0.28)_1px,transparent_1px)] [background-size:18px_18px] shadow-[var(--shadow-elegant)] dark:bg-emerald-900/40 md:block"
+              />
+
+              {/* z-2: handwritten-style annotation beside the portrait */}
+              <div
+                className="absolute right-[1%] top-[25%] z-[2] hidden select-none min-[1100px]:right-[2%] min-[1100px]:top-[28%] xl:right-[1%] xl:top-[25%] leading-[1.55] text-primary md:block"
+                style={{ ...mono, fontSize: 'clamp(11px, 1.7cqw, 14px)', fontStyle: 'italic', fontWeight: 500 }}
+              >
+                <span className="block">Build</span>
+                <span className="block">Learn</span>
+                <span className="block">Iterate</span>
+                <span className="block">→ Grow</span>
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 40 44"
+                  className="mt-1 ml-3 h-[3.4em] w-[3.1em]"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <Sparkles className="w-3.5 h-3.5 mr-2" />
-                  Start Exploring
-                </Button>
-                <span className="text-xs text-muted-foreground/60 group-hover:text-primary/50 transition-colors">
-                  Fully interactive ✨
-                </span>
+                  <path d="M34 2c6 14 2 28-18 38" />
+                  <path d="M24 32l-8 8 11 1" />
+                </svg>
               </div>
-            </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
-              className="flex flex-wrap items-center gap-3"
-            >
-              <span className="text-sm font-medium text-foreground mr-2">Tech Stack</span>
-              <TechPill icon={<SiPython className="w-4 h-4" />} label="Python" />
-              <TechPill icon={<Brain className="w-4 h-4" />} label="Machine Learning" />
-              <TechPill icon={<SiTensorflow className="w-4 h-4" />} label="Deep Learning" />
-              <TechPill icon={<FaJava className="w-4 h-4" />} label="Java" />
-              <TechPill icon={<Database className="w-4 h-4" />} label="SQL" />
-              <TechPill icon={<Flame className="w-4 h-4" />} label="Firebase" />
-            </motion.div>
-          </div>
+              {/* Mobile-only portrait panel (stacked above the terminal) */}
+              <div className="relative h-80 overflow-hidden rounded-3xl bg-emerald-100 [background-image:radial-gradient(circle,hsl(var(--primary)/0.28)_1px,transparent_1px)] [background-size:18px_18px] shadow-[var(--shadow-elegant)] dark:bg-emerald-900/40 md:hidden">
+                <img
+                  src={foreground}
+                  alt="Paul Shervin at his desk with a laptop"
+                  className="absolute bottom-0 left-1/2 h-[94%] w-auto max-w-none -translate-x-1/2"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
 
-          {/* RIGHT — portrait + floating cards */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative h-[560px] lg:h-[640px] hidden lg:block lg:-mt-24"
-          >
-            {/* organic blob */}
-            <div className="absolute inset-6 rounded-[45%_55%_60%_40%/50%_45%_55%_50%] bg-primary/10" />
-            {/* dotted decoration */}
-            <div
-              className="absolute top-8 left-8 w-24 h-24 opacity-40"
-              style={{
-                backgroundImage:
-                  'radial-gradient(hsl(var(--primary)) 1.5px, transparent 1.5px)',
-                backgroundSize: '12px 12px',
-              }}
-            />
+              {/* z-10: terminal (HTML, visual only) */}
+              <HeroTerminal className="relative z-10 mt-4 md:absolute md:left-0 md:top-[4%] md:bottom-[8%] md:mt-0 md:w-[60%]" />
 
-            {/* portrait frame */}
-            <div className="absolute inset-12 rounded-[2rem] overflow-hidden bg-card shadow-[0_30px_80px_-30px_rgba(0,0,0,0.25)]">
+              {/* z-20: cut-out foreground — person, laptop and desk in front of the terminal */}
               <img
-                src={portrait}
-                alt="Paul Shervin portrait"
-                className="w-full h-full object-cover"
-                width={1024}
-                height={1024}
+                src={foreground}
+                alt="Paul Shervin at his desk with a laptop"
+                className="pointer-events-none absolute bottom-0 z-20 hidden h-[86%] w-auto max-w-none -right-[5%] min-[1100px]:-right-[4%] min-[1100px]:h-[78%] xl:-right-[5%] xl:h-[86%] [mask-image:linear-gradient(to_bottom,black_82%,transparent_100%),linear-gradient(to_right,black_95%,transparent_100%)] [mask-composite:intersect] [-webkit-mask-composite:source-in] md:block"
+                loading="eager"
+                decoding="async"
               />
             </div>
-
-            {/* dashed curve */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 500 600" fill="none">
-              <path
-                d="M 80 320 Q 140 240 200 290 T 320 340"
-                stroke="hsl(var(--primary))"
-                strokeWidth="1.5"
-                strokeDasharray="4 6"
-                fill="none"
-                opacity="0.5"
-              />
-              <circle cx="320" cy="340" r="4" fill="hsl(var(--primary))" />
-            </svg>
-
-            <FloatingCard
-              icon={Brain}
-              title="Machine Learning"
-              text="Building models that learn and improve."
-              className="top-4 right-0"
-              delay={0.6}
-            />
-            <FloatingCard
-              icon={Code2}
-              title="Web Development"
-              text="Crafting responsive and user-friendly web apps."
-              className="top-1/2 -left-4 -translate-y-1/2"
-              delay={0.8}
-            />
-            <FloatingCard
-              icon={Wand2}
-              title="Generative AI"
-              text="Exploring the power of generative models."
-              className="bottom-8 right-0"
-              delay={1}
-            />
           </motion.div>
         </div>
       </div>
-
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.4, duration: 0.8 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 cursor-pointer"
-        onClick={() => scrollToSection('#about')}
-      >
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.6, repeat: Infinity }}
-          className="w-9 h-9 rounded-full border border-border flex items-center justify-center bg-card/60"
-        >
-          <ChevronDown className="w-4 h-4 text-muted-foreground" />
-        </motion.div>
-        <span className="text-xs text-muted-foreground">Scroll Down</span>
-      </motion.div>
     </section>
   );
 };

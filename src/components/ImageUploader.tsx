@@ -5,7 +5,8 @@ import { toast } from 'sonner';
 import { Progress } from './ui/progress';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
-import { UploadCloud, Trash2, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Input } from './ui/input';
+import { UploadCloud, Trash2, Link as LinkIcon, Loader2 } from 'lucide-react';
 
 interface ImageUploaderProps {
   value: string;
@@ -13,6 +14,70 @@ interface ImageUploaderProps {
   label: string;
   folder?: string;
 }
+
+/**
+ * Compresses an image client-side to ensure it is lightweight (<150KB),
+ * never hangs, and can be reliably saved anywhere (Firestore doc limit is 1MB).
+ */
+const compressImage = (file: File, maxDim = 1200, quality = 0.82): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    // If it's a small SVG or GIF, preserve it directly without re-encoding
+    if (file.type === 'image/svg+xml' || (file.type === 'image/gif' && file.size < 500 * 1024)) {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.onload = (e) => resolve(e.target?.result as string);
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Failed to load image for processing'));
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(e.target?.result as string);
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Try WebP first for great compression and quality
+        try {
+          const webp = canvas.toDataURL('image/webp', quality);
+          if (webp.startsWith('data:image/webp')) {
+            resolve(webp);
+            return;
+          }
+        } catch {
+          // fallback to jpeg
+        }
+
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+};
 
 export const ImageUploader: React.FC<ImageUploaderProps> = ({
   value,
@@ -23,6 +88,8 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [dragActive, setDragActive] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+  const [showUrlInput, setShowUrlInput] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDrag = (e: React.DragEvent) => {
@@ -53,62 +120,105 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     }
   };
 
-  const uploadFile = (file: File) => {
+  const uploadFile = async (file: File) => {
     // Validate file type
     if (!file.type.startsWith('image/')) {
       toast.error("Please upload an image file.");
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("File is too large. Max size allowed is 5MB.");
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File is too large. Max size allowed is 10MB.");
       return;
     }
 
     try {
       setIsUploading(true);
-      setUploadProgress(0);
+      setUploadProgress(15);
 
-      if (!storage) {
-        throw new Error("Firebase storage service is not initialized. Please check connection config.");
+      // 1. Prepare local optimized data URL first
+      let localDataUrl = '';
+      try {
+        localDataUrl = await compressImage(file);
+      } catch (err) {
+        console.warn('Local image processing issue:', err);
       }
 
-      const storageRef = ref(storage, `${folder}/${Date.now()}_${file.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
+      setUploadProgress(40);
 
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setUploadProgress(Math.round(progress));
-        },
-        (error) => {
-          console.error("Firebase Storage Upload Task Error:", error);
-          toast.error(`Upload failed: ${error.message || error.code || error}`);
-          setIsUploading(false);
-          setUploadProgress(null);
-        },
-        async () => {
-          try {
-            const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
-            onChange(downloadUrl);
-            toast.success("Image uploaded successfully!");
-          } catch (e: any) {
-            console.error("Error retrieving download URL:", e);
-            toast.error(`Failed to retrieve image URL: ${e.message || e}`);
-          } finally {
-            setIsUploading(false);
-            setUploadProgress(null);
-          }
+      // 2. Attempt Firebase Storage with a strict 4-second timeout
+      let storageUploadedUrl = '';
+      if (storage) {
+        try {
+          const cleanName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+          const storageRef = ref(storage, `${folder}/${Date.now()}_${cleanName}`);
+          const uploadTask = uploadBytesResumable(storageRef, file);
+
+          const storagePromise = new Promise<string>((resolve, reject) => {
+            uploadTask.on(
+              'state_changed',
+              (snapshot) => {
+                if (snapshot.totalBytes > 0) {
+                  const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                  setUploadProgress(Math.min(95, Math.max(40, pct)));
+                }
+              },
+              (error) => reject(error),
+              async () => {
+                try {
+                  const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                  resolve(downloadUrl);
+                } catch (e) {
+                  reject(e);
+                }
+              }
+            );
+          });
+
+          // Abort after 4 seconds to never hang indefinitely
+          const timeoutPromise = new Promise<never>((_, reject) =>
+            setTimeout(() => {
+              try {
+                uploadTask.cancel();
+              } catch {}
+              reject(new Error('Cloud upload timed out'));
+            }, 4000)
+          );
+
+          storageUploadedUrl = await Promise.race([storagePromise, timeoutPromise]);
+        } catch (storageErr) {
+          console.warn('Firebase Storage upload was unavailable or timed out, using optimized image:', storageErr);
         }
-      );
+      }
+
+      setUploadProgress(100);
+
+      // 3. Apply the best available URL
+      if (storageUploadedUrl) {
+        onChange(storageUploadedUrl);
+        toast.success("Image uploaded successfully to Cloud Storage!");
+      } else if (localDataUrl) {
+        onChange(localDataUrl);
+        toast.success("Image processed and added successfully!");
+      } else {
+        throw new Error("Could not process this image file.");
+      }
     } catch (e: any) {
-      console.error("Synchronous upload exception:", e);
-      toast.error(`Upload initialization failed: ${e.message || e}`);
+      console.error("Upload error:", e);
+      toast.error(`Image processing failed: ${e.message || e}`);
+    } finally {
       setIsUploading(false);
       setUploadProgress(null);
     }
+  };
+
+  const handleApplyUrl = () => {
+    if (!urlInput.trim()) return;
+    onChange(urlInput.trim());
+    setUrlInput('');
+    setShowUrlInput(false);
+    toast.success("Image URL applied!");
   };
 
   const handleRemove = (e: React.MouseEvent) => {
@@ -122,36 +232,84 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
 
   return (
     <div className="space-y-1.5 w-full">
-      <Label className="text-xs font-semibold text-foreground">{label}</Label>
+      <div className="flex items-center justify-between">
+        <Label className="text-xs font-semibold text-foreground">{label}</Label>
+        {!value && (
+          <button
+            type="button"
+            onClick={() => setShowUrlInput(!showUrlInput)}
+            className="text-[11px] font-medium text-primary hover:underline flex items-center gap-1"
+          >
+            <LinkIcon className="w-3 h-3" />
+            {showUrlInput ? 'Upload file' : 'Paste URL'}
+          </button>
+        )}
+      </div>
       
       {value ? (
         // Preview State
-        <div className="relative group rounded-xl border border-border overflow-hidden h-36 bg-muted/10 flex items-center justify-center">
-          <img 
-            src={value} 
-            alt="Preview" 
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
-          />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+        <div className="space-y-1">
+          <div className="relative group rounded-xl border border-border overflow-hidden h-36 bg-muted/10 flex items-center justify-center">
+            <img 
+              src={value} 
+              alt="Preview" 
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+            />
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                className="bg-background/95 border-none hover:bg-background text-foreground text-xs font-semibold rounded-lg shadow-md"
+              >
+                Replace
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                size="icon"
+                onClick={handleRemove}
+                className="h-8 w-8 rounded-lg shadow-md"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <p className="text-[10px] text-muted-foreground truncate px-1" title={value}>
+            {value.startsWith('data:') ? 'Optimized image added' : value}
+          </p>
+        </div>
+      ) : showUrlInput ? (
+        // Direct URL Input State
+        <div className="space-y-2 rounded-xl border border-border/80 bg-muted/10 p-3">
+          <div className="flex items-center gap-2">
+            <Input
+              value={urlInput}
+              onChange={(e) => setUrlInput(e.target.value)}
+              placeholder="https://... or /image.png"
+              className="h-9 text-xs"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleApplyUrl();
+                }
+              }}
+            />
             <Button
               type="button"
-              variant="outline"
               size="sm"
-              onClick={() => fileInputRef.current?.click()}
-              className="bg-background/95 border-none hover:bg-background text-foreground text-xs font-semibold rounded-lg shadow-md"
+              onClick={handleApplyUrl}
+              disabled={!urlInput.trim()}
+              className="h-9 px-3 text-xs bg-primary text-primary-foreground shrink-0"
             >
-              Replace
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              size="icon"
-              onClick={handleRemove}
-              className="h-8 w-8 rounded-lg shadow-md"
-            >
-              <Trash2 className="h-4 w-4" />
+              Apply
             </Button>
           </div>
+          <p className="text-[10px] text-muted-foreground">
+            Paste a public image link, Cloudinary URL, or local path like <code className="bg-muted px-1 py-0.5 rounded text-[10px]">/smart-india-hackathon.jpg</code>
+          </p>
         </div>
       ) : (
         // Dropzone State
@@ -171,8 +329,8 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
             <div className="space-y-3 w-full max-w-[200px]">
               <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto" />
               <div className="space-y-1">
-                <p className="text-[10px] font-semibold">Uploading image...</p>
-                <Progress value={uploadProgress || 0} className="h-1.5" />
+                <p className="text-[10px] font-semibold">Processing image...</p>
+                <Progress value={uploadProgress || 20} className="h-1.5" />
               </div>
             </div>
           ) : (
@@ -181,7 +339,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
               <p className="text-xs font-medium text-foreground">
                 Drag & drop or <span className="text-primary hover:underline font-semibold">browse</span>
               </p>
-              <p className="text-[10px] text-muted-foreground mt-1">Supports JPG, PNG, GIF up to 5MB</p>
+              <p className="text-[10px] text-muted-foreground mt-1">Supports JPG, PNG, WebP up to 10MB</p>
             </>
           )}
         </div>

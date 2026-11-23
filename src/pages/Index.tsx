@@ -5,6 +5,7 @@ import { CustomCursor } from '@/components/CustomCursor';
 import { ScrollProgress } from '@/components/ScrollProgress';
 import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
+import { RibbonShowcase } from '@/components/RibbonShowcase';
 import { WaveDivider } from '@/components/WaveDivider';
 import { About } from '@/components/About';
 import { Skills } from '@/components/Skills';
@@ -12,7 +13,6 @@ import { Projects } from '@/components/Projects';
 import { Hackathons } from '@/components/Hackathons';
 import { Achievements } from '@/components/Achievements';
 import { Badges } from '@/components/Badges';
-import { Certificates } from '@/components/Certificates';
 import { Contact } from '@/components/Contact';
 import { Footer } from '@/components/Footer';
 import { ShervinAI, ShervinAIBubble } from '@/components/ShervinAI';
@@ -77,6 +77,8 @@ const Index = () => {
         <main>
           <Hero />
 
+          <RibbonShowcase />
+
           <About />
           {/* About (bg-background) → Skills (bg-secondary/40) */}
           <WaveDivider variant="wave1" className="bg-background" fillClass="fill-[hsl(var(--secondary)/0.4)]" />
@@ -96,12 +98,8 @@ const Index = () => {
           <WaveDivider variant="wave1" className="bg-background" fillClass="fill-background" />
 
           <Badges />
-          {/* Badges (bg-background) → Certificates (bg-muted/20) */}
-          <WaveDivider variant="wave2" className="bg-background" fillClass="fill-[hsl(var(--muted)/0.2)]" />
-
-          <Certificates />
-          {/* Certificates (bg-muted/20) → Contact (bg-background) */}
-          <WaveDivider variant="wave3" className="bg-[hsl(var(--muted)/0.2)]" fillClass="fill-background" />
+          {/* Badges (bg-background) → Contact (bg-background) */}
+          <WaveDivider variant="wave2" className="bg-background" fillClass="fill-background" />
 
           <Contact />
         </main>

@@ -1,159 +1,98 @@
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Medal, Code, Sparkles } from 'lucide-react';
-import { Badge } from './ui/badge';
 import { usePortfolioData } from '@/hooks/usePortfolioData';
+import { corkStyle, frameStyle } from './hallOfFame/decor';
+import { toWin } from './hallOfFame/winUtils';
+import { NextWinNote, PinnedWin, type Win } from './hallOfFame/PinnedWin';
 
-const getIcon = (type: string) => {
-  switch (type) {
-    case 'hackathon':
-      return Trophy;
-    case 'coding':
-      return Code;
-    case 'project':
-      return Sparkles;
-    default:
-      return Medal;
-  }
-};
+const serif = { fontFamily: '"Cormorant Garamond", serif' };
 
-const getGradient = (type: string) => {
-  switch (type) {
-    case 'hackathon':
-      return 'from-yellow-500/20 to-orange-500/20';
-    case 'coding':
-      return 'from-blue-500/20 to-cyan-500/20';
-    case 'project':
-      return 'from-purple-500/20 to-pink-500/20';
-    default:
-      return 'from-primary/20 to-accent/20';
-  }
-};
-
-const getIconColor = (type: string) => {
-  switch (type) {
-    case 'hackathon':
-      return 'text-yellow-500';
-    case 'coding':
-      return 'text-blue-500';
-    case 'project':
-      return 'text-purple-500';
-    default:
-      return 'text-primary';
-  }
-};
+const StatBlock = ({ value, label }: { value: number; label: string }) => (
+  <div className="min-w-[96px]">
+    <p className="text-4xl font-semibold leading-none text-foreground md:text-5xl" style={{ ...serif, fontVariantNumeric: 'lining-nums' }}>
+      {value}
+    </p>
+    <p className="mt-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">{label}</p>
+  </div>
+);
 
 export const Achievements = () => {
-  const { achievementsQuery } = usePortfolioData();
-  const achievements = achievementsQuery.data || [];
+  const { achievementsQuery, hackathonsQuery } = usePortfolioData();
+  const hackathons = hackathonsQuery.data;
 
-  const hackathonCount = achievements.filter(a => a.category?.toLowerCase() === 'hackathon').length;
-  const codingCount = achievements.filter(a => a.category?.toLowerCase() === 'coding').length;
-  const projectCount = achievements.filter(a => a.category?.toLowerCase() === 'project').length;
+  const wins = useMemo<Win[]>(
+    () => (achievementsQuery.data ?? []).map((a, i) => toWin(a, i, hackathons ?? [])),
+    [achievementsQuery.data, hackathons],
+  );
+
+  if (wins.length === 0) return null;
+
+  const firsts = wins.filter((w) => w.rank && !w.rank.isTop && w.rank.n === 1).length;
+  const podiums = wins.filter((w) => w.rank?.podium).length;
+  const cols = wins.length + 1 <= 2 ? 'sm:grid-cols-2' : wins.length + 1 === 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2 lg:grid-cols-3';
 
   return (
-    <section id="achievements" className="py-20 md:py-32 relative overflow-hidden">
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-gradient">Achievements</span>
-          </h2>
-          <p className="text-muted-foreground text-lg">Wins & Recognition</p>
-        </motion.div>
+    <section id="achievements" className="relative bg-background py-16 md:py-24">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Header: title left, summary stats right (same pattern as Skills) */}
+        <div className="mb-14 flex flex-col gap-8 md:mb-16 md:flex-row md:items-end md:justify-between">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="max-w-2xl"
+          >
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#1e4d3a]">Achievements</p>
+            <h2 className="mt-3 text-5xl font-medium leading-[1.05] tracking-tight text-foreground md:text-6xl" style={serif}>
+              Hall of Fame
+            </h2>
+            <p className="mt-3 max-w-xl text-base text-muted-foreground md:text-lg">
+              The wins I’ve pinned up along the way, with the photos to prove it.
+            </p>
+          </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {achievements.map((achievement, index) => {
-            const category = achievement.category || 'other';
-            const Icon = getIcon(category);
-            const gradient = getGradient(category);
-            const iconColor = getIconColor(category);
-
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="card-elevated p-6 group relative overflow-hidden"
-              >
-                {/* Background Gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                
-                {/* Content */}
-                <div className="relative z-10">
-                  {/* Icon & Badge */}
-                  <div className="flex items-start justify-between mb-4">
-                    <motion.div
-                      whileHover={{ rotate: 360, scale: 1.2 }}
-                      transition={{ duration: 0.5 }}
-                      className={`w-14 h-14 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center`}
-                    >
-                      <Icon className={`w-7 h-7 ${iconColor}`} />
-                    </motion.div>
-                    <Badge variant="outline" className="capitalize">
-                      {category}
-                    </Badge>
-                  </div>
- 
-                  {/* Title */}
-                  <motion.h3
-                    className="text-xl font-bold mb-2 group-hover:text-primary transition-colors"
-                    whileHover={{ x: 5 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {achievement.title}
-                  </motion.h3>
- 
-                  {/* Event */}
-                  <p className="text-sm text-primary/80 font-medium mb-3">
-                    {achievement.organization}
-                  </p>
- 
-                  {/* Description */}
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {achievement.description}
-                  </p>
-                </div>
- 
-                {/* Decorative Corner */}
-                <div className="absolute -bottom-2 -right-2 w-20 h-20 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </motion.div>
-            );
-          })}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex gap-8 md:gap-10"
+          >
+            <StatBlock value={wins.length} label="Achievements" />
+            {podiums > 0 && <StatBlock value={podiums} label="Podium finishes" />}
+            {firsts > 0 && <StatBlock value={firsts} label="First places" />}
+          </motion.div>
         </div>
 
-        {/* Stats Summary */}
+        {/* The board: wooden frame, cork surface */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="mt-16 flex flex-wrap justify-center gap-8"
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.6 }}
+          className="relative rounded-[30px] p-3 sm:p-4"
+          style={frameStyle}
         >
-          <div className="flex items-center gap-3">
-            <Trophy className="w-6 h-6 text-yellow-500" />
-            <span className="text-lg font-medium">
-              <span className="text-2xl font-bold text-gradient">{hackathonCount}</span> Hackathon Wins
+          {/* nameplate */}
+          <div
+            className="absolute -top-5 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-md px-6 py-1.5 text-center sm:px-7"
+            style={{ background: 'linear-gradient(180deg, #f8f3e6, #e5dcc6)', boxShadow: 'inset 0 1px 0 #fff, 0 8px 14px -6px rgba(40,25,10,.55)' }}
+          >
+            <span className="absolute left-2 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-[#8a6a43]/70" aria-hidden />
+            <span className="absolute right-2 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-[#8a6a43]/70" aria-hidden />
+            <span className="text-xs font-semibold uppercase tracking-[0.26em] text-[#4a3722] sm:text-sm sm:tracking-[0.3em]" style={serif}>
+              Hall of Fame
             </span>
           </div>
-          <div className="flex items-center gap-3">
-            <Code className="w-6 h-6 text-blue-500" />
-            <span className="text-lg font-medium">
-              <span className="text-2xl font-bold text-gradient">{codingCount}</span> Coding Awards
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Sparkles className="w-6 h-6 text-purple-500" />
-            <span className="text-lg font-medium">
-              <span className="text-2xl font-bold text-gradient">{projectCount}</span> Project Award
-            </span>
+
+          <div className="relative overflow-hidden rounded-[22px] px-5 pb-12 pt-14 sm:px-10 md:px-14 md:pb-16" style={corkStyle}>
+            <div className={`grid items-start gap-x-12 gap-y-14 [grid-auto-flow:dense] ${cols}`}>
+              {wins.map((win, i) => (
+                <PinnedWin key={win.id} win={win} index={i} />
+              ))}
+              <NextWinNote />
+            </div>
           </div>
         </motion.div>
       </div>

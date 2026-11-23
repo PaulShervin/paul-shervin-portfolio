@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import ProjectDetails from "./pages/ProjectDetails";
+import AllProjects from "./pages/AllProjects";
 
 // Admin page components & Auth guards
 import { AuthProvider } from "./hooks/useAuth";
@@ -31,11 +33,13 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            
+            <Route path="/projects" element={<AllProjects />} />
+            <Route path="/project/:projectId" element={<ProjectDetails />} />
+
             {/* Admin Routes */}
             <Route path="/admin/login" element={<Login />} />
-            <Route 
-              path="/admin" 
+            <Route
+              path="/admin"
               element={
                 <ProtectedRoute>
                   <AdminLayout />

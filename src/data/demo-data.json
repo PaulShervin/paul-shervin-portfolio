@@ -5,7 +5,7 @@
     "location": "Saveetha Engineering College",
     "tagline": "Deep Learning, Generative & Agentic AI enthusiast"
   },
-  "about": "I'm Paul Shervin, an enthusiastic learner pursuing AI & ML at Saveetha Engineering College. I have worked on several AI-based projects and actively participated in prestigious hackathons like the Smart India Hackathon and IBM Datathon, gaining real-world problem-solving experience. I'm passionate about Machine Learning, Deep Learning, Generative AI, and Agentic AI, and I love exploring new AI tools and technologies. I enjoy solving complex DSA and Java problems, constantly pushing myself to innovate and build impactful solutions that bridge technology with real-world challenges.",
+  "about": "I'm an AI & ML student at Saveetha Engineering College specializing in Machine Learning, Deep Learning, and Agentic AI. I build intelligent solutions and have competed in national hackathons like the Smart India Hackathon. I love exploring new technologies and constantly push myself to innovate and solve real-world problems.",
   "socials": {
     "github": "https://github.com/paulshervin",
     "linkedin": "https://linkedin.com/in/paulshervin",
@@ -237,11 +237,11 @@
       "image": "/srm.jpg"
     },
     {
-      "name": "Synsara",
+      "name": "Syandsara",
       "year": "2025",
       "role": "Frontend Engineer (NightShaders)",
-      "description": "Built an AI-powered health application at Synsara, my first hackathon experience, where I gained valuable exposure to rapid development, teamwork, and transforming an idea into a working solution.",
-      "image": "/synsara.jpg"
+      "description": "Built an AI-powered health application at Syandsara, my first hackathon experience, where I gained valuable exposure to rapid development, teamwork, and transforming an idea into a working solution.",
+      "image": "/google-solution-challenge.png"
     },
     {
       "name": "Smart India Hackathon",
@@ -331,6 +331,21 @@
       "image": "/badge-solution-challenge.png"
     },
     {
+      "name": "365 Days Badge",
+      "source": "LeetCode",
+      "image": "https://assets.leetcode.com/static_assets/marketing/lg365.png"
+    },
+    {
+      "name": "Annual Badge 2026",
+      "source": "LeetCode",
+      "image": "https://assets.leetcode.com/static_assets/others/2026_1080_1080.png"
+    },
+    {
+      "name": "200 Days Badge 2026",
+      "source": "LeetCode",
+      "image": "https://assets.leetcode.com/static_assets/others/200_1080_1080.png"
+    },
+    {
       "name": "100 Days Badge 2026",
       "source": "LeetCode",
       "image": "https://assets.leetcode.com/static_assets/others/100_1080_1080.png"
@@ -349,6 +364,26 @@
       "name": "50 Days Badge 2025",
       "source": "LeetCode",
       "image": "https://assets.leetcode.com/static_assets/others/lg2550.png"
+    },
+    {
+      "name": "Oct LeetCoding Challenge",
+      "source": "LeetCode",
+      "image": "https://leetcode.com/static/images/badges/dcc-2026-10.png"
+    },
+    {
+      "name": "Sep LeetCoding Challenge",
+      "source": "LeetCode",
+      "image": "https://leetcode.com/static/images/badges/dcc-2026-9.png"
+    },
+    {
+      "name": "Aug LeetCoding Challenge",
+      "source": "LeetCode",
+      "image": "https://leetcode.com/static/images/badges/dcc-2026-8.png"
+    },
+    {
+      "name": "Jul LeetCoding Challenge",
+      "source": "LeetCode",
+      "image": "https://leetcode.com/static/images/badges/dcc-2026-7.png"
     },
     {
       "name": "Jun LeetCoding Challenge",

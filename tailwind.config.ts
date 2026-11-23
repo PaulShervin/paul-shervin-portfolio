@@ -109,6 +109,22 @@ export default {
           "0%, 100%": { transform: "translate(0, 0) scale(1)" },
           "33%": { transform: "translate(30px, -50px) scale(1.1)" },
           "66%": { transform: "translate(-20px, 20px) scale(0.9)" }
+        },
+        "ribbon-left": {
+          "0%": { transform: "translate3d(0, 0, 0)" },
+          "100%": { transform: "translate3d(-50%, 0, 0)" }
+        },
+        "ribbon-right": {
+          "0%": { transform: "translate3d(-50%, 0, 0)" },
+          "100%": { transform: "translate3d(0, 0, 0)" }
+        },
+        "badge-float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" }
+        },
+        "badge-spin": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" }
         }
       },
       animation: {
@@ -120,7 +136,11 @@ export default {
         "scale-in": "scale-in 0.3s ease-out",
         "shimmer": "shimmer 2s linear infinite",
         "float": "float 6s ease-in-out infinite",
-        "blob": "blob 7s infinite"
+        "blob": "blob 7s infinite",
+        "ribbon-left": "ribbon-left 38s linear infinite",
+        "ribbon-right": "ribbon-right 38s linear infinite",
+        "badge-float": "badge-float 5s ease-in-out infinite",
+        "badge-spin": "badge-spin 40s linear infinite"
       },
     },
   },

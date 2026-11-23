@@ -1,3 +1,4 @@
+import type { PhotoEdit, CardSize } from '@/components/hackathons/photoEdit';
 import { useQuery } from '@tanstack/react-query';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -60,6 +61,14 @@ export interface AchievementData {
   category: string; // maps to type
   icon?: string;
   highlights?: string[];
+  /** Winning photo pinned on the Hall of Fame board. */
+  image?: string;
+  /** Non-destructive edits from the admin Photo Studio (zoom, pan, rotate ...). */
+  photoEdit?: Partial<PhotoEdit>;
+  /** 'large' spans two columns, 'normal' is one; 'auto' (or missing) makes first places large. */
+  cardSize?: 'auto' | 'normal' | 'large';
+  /** Position on the board, set by the admin Layout Board. */
+  order?: number;
 }
 
 export interface CertificationData {
@@ -79,6 +88,14 @@ export interface HackathonData {
   description: string;
   teamName?: string;
   image?: string;
+  /** Non-destructive edits made in the admin Photo Studio (zoom, pan, rotate, filters ...). */
+  photoEdit?: Partial<PhotoEdit>;
+  /** Bento grid size chosen in the admin; 'auto' (or missing) keeps the default pattern. */
+  cardSize?: CardSize;
+  /** Set when the admin saved this entry's photo; skips the legacy name-based image override. */
+  customImage?: boolean;
+  /** Position in the bento grid, set by the admin Layout Board. Entries without it keep their stored order. */
+  order?: number;
 }
 
 // Custom hook to fetch all database records
@@ -215,7 +232,12 @@ export const usePortfolioData = (useDraft = false) => {
         querySnapshot.forEach((doc) => {
           list.push({ id: doc.id, ...doc.data() } as AchievementData);
         });
-        if (list.length > 0) return list;
+        // honour the order chosen on the admin Layout Board (stable for entries that have none)
+        const ordered = list
+          .map((a, i) => ({ a, i }))
+          .sort((x, y) => (x.a.order ?? x.i) - (y.a.order ?? y.i) || x.i - y.i)
+          .map(({ a }) => a);
+        if (ordered.length > 0) return ordered;
       } catch (e) {
         console.error("Error fetching achievements, using fallback", e);
       }
@@ -262,7 +284,11 @@ export const usePortfolioData = (useDraft = false) => {
           const data = doc.data();
           let image = data.image || '';
           const nameLower = data.name ? data.name.toLowerCase() : '';
-          if (nameLower.includes('smart india') || nameLower.includes('sih')) {
+          // Entries saved from the admin Photo Studio keep exactly the photo that was chosen there.
+          // Older entries keep the original name-based photo mapping.
+          if (data.customImage) {
+            // keep `image` as stored
+          } else if (nameLower.includes('smart india') || nameLower.includes('sih')) {
             image = '/smart-india-hackathon.jpg';
           } else if (nameLower.includes('national')) {
             image = '/openai-nxtwave-nationals.png';
@@ -272,10 +298,17 @@ export const usePortfolioData = (useDraft = false) => {
             image = '/google-solution-challenge.png';
           } else if (nameLower.includes('vit void') || nameLower.includes('void')) {
             image = '/vit-void-hackathon.jpg';
+          } else if (nameLower.includes('synsara') || nameLower.includes('syandsara')) {
+            image = '/google-solution-challenge.png';
           }
           list.push({ id: doc.id, ...data, image } as HackathonData);
         });
-        if (list.length > 0) return list;
+        // honour the order chosen on the admin Layout Board (stable for entries that have none)
+        const ordered = list
+          .map((h, i) => ({ h, i }))
+          .sort((a, b) => (a.h.order ?? a.i) - (b.h.order ?? b.i) || a.i - b.i)
+          .map(({ h }) => h);
+        if (ordered.length > 0) return ordered;
       } catch (e) {
         console.error("Error fetching hackathons, using fallback", e);
       }
@@ -292,6 +325,8 @@ export const usePortfolioData = (useDraft = false) => {
           image = '/google-solution-challenge.png';
         } else if (nameLower.includes('vit void') || nameLower.includes('void')) {
           image = '/vit-void-hackathon.jpg';
+        } else if (nameLower.includes('synsara') || nameLower.includes('syandsara')) {
+          image = '/google-solution-challenge.png';
         }
         return {
           id: `hack-${i}`,

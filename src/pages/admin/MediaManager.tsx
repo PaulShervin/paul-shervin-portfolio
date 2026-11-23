@@ -72,53 +72,87 @@ const MediaManager: React.FC = () => {
     }
   };
 
-  const uploadFile = (file: File) => {
+  const uploadFile = async (file: File) => {
     // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
       toast.error("File is too large. Max size allowed is 10MB.");
       return;
     }
 
-    const fileRef = ref(storage, `portfolio/${Date.now()}_${file.name}`);
-    const uploadTask = uploadBytesResumable(fileRef, file);
+    setUploadProgress(15);
 
-    setUploadProgress(0);
+    try {
+      let finalUrl = '';
 
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setUploadProgress(Math.round(progress));
-      },
-      (error) => {
-        console.error("Upload error:", error);
-        toast.error("Failed to upload file to storage.");
-        setUploadProgress(null);
-      },
-      async () => {
+      if (storage) {
         try {
-          const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
-          
-          // Save record to firestore
-          const newMedia = {
-            name: file.name,
-            url: downloadUrl,
-            type: file.type,
-            size: file.size,
-            uploadedAt: new Date().toISOString()
-          };
+          const fileRef = ref(storage, `portfolio/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`);
+          const uploadTask = uploadBytesResumable(fileRef, file);
 
-          await addDoc(collection(db, 'media'), newMedia);
-          toast.success("File uploaded successfully!");
-          fetchFiles();
-        } catch (e) {
-          console.error("Error saving document:", e);
-          toast.error("File uploaded but failed to save reference.");
-        } finally {
-          setUploadProgress(null);
+          const storagePromise = new Promise<string>((resolve, reject) => {
+            uploadTask.on(
+              'state_changed',
+              (snapshot) => {
+                if (snapshot.totalBytes > 0) {
+                  const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  setUploadProgress(Math.min(95, Math.max(20, Math.round(progress))));
+                }
+              },
+              (error) => reject(error),
+              async () => {
+                try {
+                  const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                  resolve(downloadUrl);
+                } catch (e) {
+                  reject(e);
+                }
+              }
+            );
+          });
+
+          const timeoutPromise = new Promise<never>((_, reject) =>
+            setTimeout(() => {
+              try {
+                uploadTask.cancel();
+              } catch {}
+              reject(new Error('Upload timed out'));
+            }, 4000)
+          );
+
+          finalUrl = await Promise.race([storagePromise, timeoutPromise]);
+        } catch (storageErr) {
+          console.warn('Storage failed or timed out, reading local file as data URL:', storageErr);
         }
       }
-    );
+
+      // If cloud storage was not available or timed out, read as Data URL
+      if (!finalUrl) {
+        finalUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target?.result as string);
+          reader.onerror = () => reject(new Error('Failed to read file locally'));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Save record to firestore
+      const newMedia = {
+        name: file.name,
+        url: finalUrl,
+        type: file.type,
+        size: file.size,
+        uploadedAt: new Date().toISOString()
+      };
+
+      await addDoc(collection(db, 'media'), newMedia);
+      toast.success("File added successfully!");
+      fetchFiles();
+    } catch (e: any) {
+      console.error("Error saving document:", e);
+      toast.error(`Upload error: ${e.message || e}`);
+    } finally {
+      setUploadProgress(null);
+    }
   };
 
   const handleDelete = async (fileItem: MediaFile) => {
